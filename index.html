@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v15</title>
+    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v16</title>
     <style>
         :root {
             --bg-main: #12141c;
@@ -181,6 +181,7 @@
         }
         .clickable-word:hover { background-color: var(--primary); color: white; }
 
+        /* Kelime Giriş Grubu ve Ses Butonu Alanı */
         .dictionary-actions {
             display: flex;
             gap: 12px;
@@ -193,6 +194,14 @@
             align-items: center;
         }
 
+        .input-with-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 180px;
+        }
+
         .dictionary-actions input {
             padding: 14px;
             background-color: var(--bg-input);
@@ -200,8 +209,28 @@
             color: var(--text-main);
             border-radius: 8px;
             font-size: 1rem;
-            flex: 1;
-            min-width: 180px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Havalı Ses Hoparlör Butonu */
+        .audio-btn {
+            background: #2a2f45;
+            border: 1px solid var(--border);
+            color: var(--secondary);
+            font-size: 1.2rem;
+            padding: 11px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .audio-btn:hover {
+            background: var(--secondary);
+            color: #12141c;
+            transform: scale(1.05);
         }
 
         button.btn-add {
@@ -232,15 +261,23 @@
             position: relative;
         }
 
-        .word-card h3 { margin: 0 0 12px 0; font-size: 1.5rem; }
+        .word-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-right: 35px;
+        }
+
+        .word-card h3 { margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px; }
         .word-card .meaning { font-weight: bold; color: var(--secondary); margin-bottom: 8px; font-size: 1.15rem; }
         .word-card .sentence-tr { font-weight: 500; color: var(--success); margin-bottom: 12px; font-size: 0.95rem; font-style: italic;}
         .word-card .context { font-size: 0.9rem; color: var(--text-light); background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; }
-        .word-card .lang-tag { font-size: 0.75rem; color: var(--primary); border: 1px solid var(--primary); padding: 2px 6px; border-radius: 4px; display: inline-block; margin-bottom: 8px; font-weight: bold; text-transform: uppercase;}
+        .word-card .lang-tag { font-size: 0.75rem; color: var(--primary); border: 1px solid var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase;}
         
         .delete-btn {
             position: absolute;
-            top: 18px;
+            top: 22px;
             right: 18px;
             background: none;
             border: none;
@@ -270,6 +307,7 @@
             cursor: pointer;
             box-sizing: border-box;
             border: 1px solid var(--border);
+            position: relative;
         }
 
         .flashcard .card-main { font-size: 2.4rem; font-weight: 800; margin-bottom: 12px; color: #fff; }
@@ -280,6 +318,12 @@
             background: linear-gradient(145deg, var(--bg-card), #1b2820);
         }
         .flashcard.flipped .card-main { color: var(--success); }
+
+        .card-audio-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
 
         .flashcard-controls {
             margin-top: 25px;
@@ -308,7 +352,6 @@
             box-sizing: border-box;
         }
 
-        /* 👑 AKILLI YARDIM MODALI (POP-UP) TASARIMI */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -368,7 +411,7 @@
 
         <div class="step-item">
             <p><strong><span class="step-number">3</span> Kelimelere Tıkla ve Ezberle:</strong><br>
-            Altyazı akışında bilmediğin herhangi bir kelimenin üzerine tıkla. Yapay zeka kelimenin o sahnedeki tam anlamını ve cümlenin çevirisini otomatik çıkaracaktır. Sözlüğe kaydet ve Flashcard kartlarıyla ezberle!</p>
+            Altyazı akışında bilmediğin herhangi bir kelimenin üzerine tıkla. Yapay zeka kelimenin o sahnedeki tam anlamını ve cümlenin çevirisini otomatik çıkaracaktır. Sözlüğe kaydet ve Flashcard kartlarıyla sesli telaffuz eşliğinde ezberle!</p>
         </div>
 
         <button class="modal-close-btn" onclick="closeModal()">Anladım, Harika! Başlayalım 🍿</button>
@@ -377,8 +420,8 @@
 
 <div class="container">
     <header>
-        <h1>Cine<span>Lingo</span> AI v15</h1>
-        <p>Kullanıcı Dostu İlk Kurulum Rehberli Evrensel Dil Laboratuvarı</p>
+        <h1>Cine<span>Lingo</span> AI v16</h1>
+        <p>Sesli Telaffuz Motorlu Evrensel Yapay Zeka Dil Laboratuvarı</p>
     </header>
 
     <div class="config-section">
@@ -429,7 +472,10 @@
 
     <div id="dictionary" class="tab-content">
         <div class="dictionary-actions">
-            <input type="text" id="word-de" placeholder="Seçilen Kelime">
+            <div class="input-with-btn">
+                <input type="text" id="word-de" placeholder="Seçilen Kelime">
+                <button class="audio-btn" onclick="speakCurrentWord()" title="Telaffuz Et">🗣️</button>
+            </div>
             <input type="text" id="word-tr" placeholder="Yapay Zeka Çeviriyor... 🤖">
             <input type="text" id="sentence-tr" placeholder="Cümlenin Çevirisi (Llama)...">
             <input type="text" id="word-ctx" placeholder="Orijinal Cümle">
@@ -440,7 +486,10 @@
 
     <div id="flashcards" class="tab-content">
         <div class="flashcard-container">
-            <div class="flashcard" id="card" onclick="flipCard()">
+            <div class="flashcard" id="card">
+                <div class="card-audio-container" onclick="event.stopPropagation();">
+                    <button class="audio-btn" onclick="speakFlashcardWord()">🗣️</button>
+                </div>
                 <div class="card-main" id="card-main-text">Kartlar Hazır Değil</div>
                 <div class="card-sub" id="card-sub-text">Altyazılardan kelimelere tıklayarak başlayın.</div>
             </div>
@@ -459,8 +508,7 @@
     let isFlipped = false;
 
     window.onload = function() {
-        // Kelimeleri yerel hafızadan yükle
-        const savedData = localStorage.getItem('cineLingoDictV15');
+        const savedData = localStorage.getItem('cineLingoDictV16');
         if (savedData) myDictionary = JSON.parse(savedData);
         
         const savedKey = localStorage.getItem('groqApiKey');
@@ -469,7 +517,6 @@
         const savedLang = localStorage.getItem('targetLanguage');
         if (savedLang) document.getElementById('lang-select').value = savedLang;
 
-        // 👑 AKILLI REHBER KONTROLÜ: Kullanıcı siteye ilk kez mi giriyor?
         const hasVisited = localStorage.getItem('hasVisitedCineLingo');
         if (!hasVisited) {
             document.getElementById('welcome-modal').style.display = 'flex';
@@ -479,13 +526,49 @@
         document.getElementById('sub-search').addEventListener('input', filterSubtitles);
     };
 
-    function openModal() {
-        document.getElementById('welcome-modal').style.display = 'flex';
+    // 🔊 YEREL TARAYICI SESLENDİRME MOTORU (TTS)
+    function speakWord(text, langCode) {
+        if ('speechSynthesis' in window) {
+            // Devam eden başka bir seslendirme varsa durdur
+            window.speechSynthesis.cancel();
+            
+            let utterance = new SpeechSynthesisUtterance(text);
+            
+            // Seçilen dile göre haritalama kodları
+            let langMapping = {
+                'de': 'de-DE',
+                'en': 'en-US',
+                'fr': 'fr-FR',
+                'es': 'es-ES',
+                'it': 'it-IT'
+            };
+            
+            utterance.lang = langMapping[langCode] || 'de-DE';
+            utterance.rate = 0.85; // Kelimeleri daha net anlamak için çok hafif yavaşlatılmış ideal hız
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert("Maalesef tarayıcınız sesli telaffuz özelliğini desteklemiyor.");
+        }
     }
 
+    function speakCurrentWord() {
+        const word = document.getElementById('word-de').value.trim();
+        const lang = document.getElementById('lang-select').value;
+        if(word && !word.includes("Seçilen")) {
+            speakWord(word, lang);
+        }
+    }
+
+    function speakFlashcardWord() {
+        let activeWords = getActiveLangWords();
+        if(activeWords.length === 0) return;
+        // Kart hangi dildeyse o dilde seslendir
+        speakWord(activeWords[currentCardIndex].de, activeWords[currentCardIndex].lang);
+    }
+
+    function openModal() { document.getElementById('welcome-modal').style.display = 'flex'; }
     function closeModal() {
         document.getElementById('welcome-modal').style.display = 'none';
-        // Kullanıcının artık ilk gelişi olmadığını hafızaya mühürle
         localStorage.setItem('hasVisitedCineLingo', 'true');
     }
 
@@ -508,10 +591,8 @@
         const file = event.target.files[0];
         if (!file) return;
         document.getElementById('file-info').innerText = `Yüklenen Dosya: ${file.name}`;
-        
         document.getElementById('loading-spinner').style.display = 'block';
         document.getElementById('subtitle-container').innerHTML = '';
-        
         const reader = new FileReader();
         reader.onload = function(e) { 
             setTimeout(() => { parseSRT(e.target.result); }, 50);
@@ -539,7 +620,6 @@
     function renderSubtitles(subs) {
         const container = document.getElementById('subtitle-container');
         container.innerHTML = '';
-        
         subs.forEach(sub => {
             let words = sub.text.split(/\s+/);
             let clickableHtml = words.map(word => {
@@ -554,7 +634,6 @@
                 </div>
             `;
         });
-        
         document.getElementById('loading-spinner').style.display = 'none';
     }
 
@@ -570,7 +649,7 @@
         let langName = document.getElementById('lang-select').options[document.getElementById('lang-select').selectedIndex].text;
 
         if (!apiKey) {
-            alert("Lütfen önce yukarıdaki alana veya kılavuzdaki adımları izleyerek Groq API Key tanımlayın!");
+            alert("Lütfen önce yukarıdaki alana Groq API Key tanımlayın!");
             openModal();
             return;
         }
@@ -583,6 +662,9 @@
         document.getElementById('sentence-tr').value = `${langName} bağlamı çözülüyor... ⚡`;
         
         document.querySelectorAll('.tab-btn')[1].click();
+
+        // Seçildiği an kelimeyi otomatik seslendir (Kullanıcı deneyimi sihri ✨)
+        speakWord(cleanWord, currentLang);
 
         const promptText = `Sen profesyonel bir çok dilli dilbilimci ve sözlüksün. Sana kaynak dilde bir kelime ve o kelimenin geçtiği film altyazı cümlesini vereceğim. 
 Kelimenin o cümledeki tam bağlamsal anlamına odaklanarak bana sadece ve sadece Türkçe anlamlarını içeren şu JSON formatında cevap ver, asla açıklama veya markdown ekleme:
@@ -620,7 +702,7 @@ Kelime: ${cleanWord}
         })
         .catch(err => {
             console.error(err);
-            document.getElementById('word-tr').value = "Hata! API Key veya internet bağlantısı geçersiz.";
+            document.getElementById('word-tr').value = "Hata! API Key veya bağlantı geçersiz.";
             document.getElementById('sentence-tr').value = "İstek başarısız oldu.";
         });
     }
@@ -635,7 +717,7 @@ Kelime: ${cleanWord}
         if(!de || !tr || tr.includes("ediliyor")) return;
 
         myDictionary.push({ de, tr, str, ctx, lang });
-        localStorage.setItem('cineLingoDictV15', JSON.stringify(myDictionary));
+        localStorage.setItem('cineLingoDictV16', JSON.stringify(myDictionary));
         
         document.getElementById('word-de').value = '';
         document.getElementById('word-tr').value = '';
@@ -649,7 +731,7 @@ Kelime: ${cleanWord}
     function deleteWord(indexInGlobal) {
         if(confirm("Silmek istediğine emin misin?")) {
             myDictionary.splice(indexInGlobal, 1);
-            localStorage.setItem('cineLingoDictV15', JSON.stringify(myDictionary));
+            localStorage.setItem('cineLingoDictV16', JSON.stringify(myDictionary));
             filterDictionaryDisplay();
         }
     }
@@ -666,7 +748,10 @@ Kelime: ${cleanWord}
                 grid.innerHTML += `
                     <div class="word-card">
                         <button class="delete-btn" onclick="deleteWord(${index})">Sil</button>
-                        <span class="lang-tag">${word.lang}</span>
+                        <div class="word-card-header">
+                            <span class="lang-tag">${word.lang}</span>
+                            <button class="audio-btn" style="padding:5px 10px; font-size:1rem;" onclick="speakWord('${word.de}', '${word.lang}')" title="Dinle">🗣️</button>
+                        </div>
                         <h3>${word.de}</h3>
                         <p class="meaning"><strong>Anlamı (AI):</strong> ${word.tr}</p>
                         <p class="sentence-tr"><strong>Sahne Çevirisi:</strong> ${word.str}</p>
@@ -698,75 +783,11 @@ Kelime: ${cleanWord}
         return myDictionary.filter(w => w.lang === currentLang);
     }
 
-    function updateFlashcard() {
-        const mainText = document.getElementById('card-main-text');
-        const subText = document.getElementById('card-sub-text');
-        const card = document.getElementById('card');
-        isFlipped = false;
-        card.classList.remove('flipped');
-        
-        let activeWords = getActiveLangWords();
-        if(activeWords.length === 0) {
-            mainText.innerText = "Kartlar Hazır Değil";
-            subText.innerText = "Bu dil için kelimelere tıklayarak başlayın.";
-            return;
-        }
-        if(currentCardIndex >= activeWords.length) currentCardIndex = 0;
-        mainText.innerText = activeWords[currentCardIndex].de;
-        subText.innerText = "Sahne Cümlesi: " + activeWords[currentCardIndex].ctx;
-    }
-
-    function flipCard() {
-        let activeWords = getActiveLangWords();
-        if(activeWords.length === 0) return;
-        
-        const mainText = document.getElementById('card-main-text');
-        const subText = document.getElementById('card-sub-text');
-        const card = document.getElementById('card');
-        isFlipped = !isFlipped;
-        
-        if(isFlipped) {
-            mainText.innerText = activeWords[currentCardIndex].tr;
-            subText.innerText = "Komple Çeviri: " + activeWords[currentCardIndex].str;
-            card.classList.add('flipped');
-        } else {
-            mainText.innerText = activeWords[currentCardIndex].de;
-            subText.innerText = "Sahne Cümlesi: " + activeWords[currentCardIndex].ctx;
-            card.classList.remove('flipped');
-        }
-    }
-
-    function nextCard() {
-        let activeWords = getActiveLangWords();
-        if(activeWords.length === 0) return;
-        currentCardIndex = (currentCardIndex + 1) % activeWords.length;
-        updateFlashcard();
-    }
-
-    function prevCard() {
-        let activeWords = getActiveLangWords();
-        if(activeWords.length === 0) return;
-        currentCardIndex = (currentCardIndex - 1 + activeWords.length) % activeWords.length;
-        updateFlashcard();
-    }
-
-    const dropZone = document.getElementById('drop-zone');
-    dropZone.addEventListener('dragover', (e) => e.preventDefault());
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        const file = e.dataTransfer.files[0];
-        if(file && file.name.endsWith('.srt')) {
-            document.getElementById('file-info').innerText = `Aktif Altyazı: ${file.name}`;
-            document.getElementById('loading-spinner').style.display = 'block';
-            document.getElementById('subtitle-container').innerHTML = '';
-            const reader = new FileReader();
-            reader.onload = function(evt) { 
-                setTimeout(() => { parseSRT(evt.target.result); }, 50);
-            };
-            reader.readAsText(file, "UTF-8");
-        }
+    document.getElementById('card').addEventListener('click', function(e) {
+        // Eğer ses butonuna tıklandıysa kartın dönme efektini tetikleme
+        if (e.target.closest('.audio-btn')) return;
+        flipCard();
     });
-</script>
 
-</body>
-</html>
+    function updateFlashcard() {
+        const
