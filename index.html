@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v16.1</title>
+    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v16.2</title>
     <style>
         :root {
             --bg-main: #12141c;
@@ -418,7 +418,7 @@
 
 <div class="container">
     <header>
-        <h1>Cine<span>Lingo</span> AI v16.1</h1>
+        <h1>Cine<span>Lingo</span> AI v16.2</h1>
         <p>Sesli Telaffuz Motorlu Evrensel Yapay Zeka Dil Laboratuvarı</p>
     </header>
 
@@ -460,4 +460,65 @@
         <input type="text" class="search-box" id="sub-search" placeholder="Altyazı satırlarında ara...">
         
         <div id="loading-spinner" class="loading-overlay">
-            🎬 Alty
+            🎬 Altyazı dosyası işleniyor ve butonlara dönüştürülüyor. Lütfen bekleyin... ⏳
+        </div>
+        
+        <div class="subtitle-stream" id="subtitle-container">
+            <p style="text-align: center; color: var(--text-light);">Lütfen çalışmak istediğiniz .srt dosyasını yükleyin.</p>
+        </div>
+    </div>
+
+    <div id="dictionary" class="tab-content">
+        <div class="dictionary-actions">
+            <div class="input-with-btn">
+                <input type="text" id="word-de" placeholder="Seçilen Kelime">
+                <button class="audio-btn" onclick="speakCurrentWord()" title="Telaffuz Et">🗣️</button>
+            </div>
+            <input type="text" id="word-tr" placeholder="Yapay Zeka Çeviriyor... 🤖">
+            <input type="text" id="sentence-tr" placeholder="Cümlenin Çevirisi (Llama)...">
+            <input type="text" id="word-ctx" placeholder="Orijinal Cümle">
+            <button class="btn-add" onclick="addWordToDictionary()">Sözlüğe Kaydet</button>
+        </div>
+        <div class="word-grid" id="word-grid-container"></div>
+    </div>
+
+    <div id="flashcards" class="tab-content">
+        <div class="flashcard-container">
+            <div class="flashcard" id="card">
+                <div class="card-audio-container" onclick="event.stopPropagation();">
+                    <button class="audio-btn" onclick="speakFlashcardWord()">🗣️</button>
+                </div>
+                <div class="card-main" id="card-main-text">Kartlar Hazır Değil</div>
+                <div class="card-sub" id="card-sub-text">Altyazılardan kelimelere tıklayarak başlayın.</div>
+            </div>
+            <div class="flashcard-controls">
+                <button class="flashcard-btn" style="background: #374151; color: white;" onclick="prevCard()">Önceki</button>
+                <button class="flashcard-btn" style="background: var(--primary); color: white;" onclick="nextCard()">Sonraki</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let parsedSubtitles = [];
+    let myDictionary = [];
+    let currentCardIndex = 0;
+    let isFlipped = false;
+
+    window.onload = function() {
+        const savedData = localStorage.getItem('cineLingoDictV16');
+        if (savedData) myDictionary = JSON.parse(savedData);
+        
+        const savedKey = localStorage.getItem('groqApiKey');
+        if (savedKey) document.getElementById('api-key-input').value = savedKey;
+        
+        const savedLang = localStorage.getItem('targetLanguage');
+        if (savedLang) document.getElementById('lang-select').value = savedLang;
+
+        const hasVisited = localStorage.getItem('hasVisitedCineLingo');
+        if (!hasVisited) {
+            document.getElementById('welcome-modal').style.display = 'flex';
+        }
+
+        filterDictionaryDisplay();
+        document.getElementById('sub-search').addEventListener('input', filterSubtitles);
