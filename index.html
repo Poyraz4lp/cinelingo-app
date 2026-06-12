@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v17.6</title>
+    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v17.3</title>
     <style>
         :root {
             --bg-main: #12141c;
@@ -376,17 +376,6 @@
         .step-item { margin-bottom: 20px; line-height: 1.6; }
         .step-number { background: var(--secondary); color: #12141c; font-weight: bold; padding: 2px 8px; border-radius: 4px; margin-right: 5px; }
         
-        .browser-warning {
-            background: rgba(255, 42, 95, 0.1);
-            border: 1px dashed var(--primary);
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: var(--text-main);
-            line-height: 1.5;
-        }
-
         .modal-close-btn {
             background-color: var(--success);
             color: #12141c;
@@ -423,17 +412,13 @@
             Altyazı akışında bilmediğin kelimenin üzerine tıkla. Yapay zeka anlamını çıkarırken yerel ses motoru kelimeyi orijinal aksanıyla okuyacaktır.</p>
         </div>
 
-        <div class="browser-warning">
-            💡 <strong>Önemli Telaffuz Notu:</strong> Kelime seslendirmelerinin en pürüzsüz, takılmasız ve gerçekçi yerel aksanlarla çalışması için bu siteyi <strong>Google Chrome</strong>, <strong>Microsoft Edge</strong> veya <strong>Safari</strong> tarayıcıları üzerinden açmanız önemle tavsiye edilir.
-        </div>
-
         <button class="modal-close-btn" onclick="closeModal()">Anladım, Harika! Başlayalım 🍿</button>
     </div>
 </div>
 
 <div class="container">
     <header>
-        <h1>Cine<span>Lingo</span> AI v17.6</h1>
+        <h1>Cine<span>Lingo</span> AI v17.3</h1>
         <p>Gelişmiş Yerel Aksan Motorlu Yapay Zeka Dil Laboratuvarı</p>
     </header>
 
@@ -566,225 +551,4 @@
             utterance.rate = 0.85; 
 
             let voices = window.speechSynthesis.getVoices();
-            let matchedVoice = voices.find(v => v.lang.toLowerCase().replace('_', '-') === targetLang.toLowerCase() || v.lang.toLowerCase().startsWith(langCode));
-            
-            if (matchedVoice) {
-                utterance.voice = matchedVoice;
-            }
-            
-            window.speechSynthesis.speak(utterance);
-        }
-    }
-
-    function speakCurrentWord() {
-        const word = document.getElementById('word-de').value.trim();
-        const lang = document.getElementById('lang-select').value;
-        if(word && !word.includes("Seçilen")) {
-            speakWord(word, lang);
-        }
-    }
-
-    function speakFlashcardWord() {
-        let activeWords = getActiveLangWords();
-        if(activeWords.length === 0) return;
-        speakWord(activeWords[currentCardIndex].de, activeWords[currentCardIndex].lang);
-    }
-
-    function saveConfig() {
-        const key = document.getElementById('api-key-input').value.trim();
-        const lang = document.getElementById('lang-select').value;
-        localStorage.setItem('groqApiKey', key);
-        localStorage.setItem('targetLanguage', lang);
-    }
-
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        if(window.event && window.event.currentTarget) window.event.currentTarget.classList.add('active');
-        if(tabId === 'flashcards') updateFlashcard();
-    }
-
-    function handleFileSelect(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        processSrtFile(file);
-    }
-
-    function processSrtFile(file) {
-        document.getElementById('file-info').innerText = "Yüklenen Dosya: " + file.name;
-        document.getElementById('loading-spinner').style.display = 'block';
-        document.getElementById('subtitle-container').innerHTML = '';
-        const reader = new FileReader();
-        reader.onload = function(e) { 
-            setTimeout(() => { parseSRT(e.target.result); }, 50);
-        };
-        reader.readAsText(file, "UTF-8");
-    }
-
-    function parseSRT(data) {
-        const blocks = data.replace(/\r\n/g, '\n').split('\n\n');
-        parsedSubtitles = [];
-        blocks.forEach(block => {
-            const lines = block.split('\n');
-            if (lines.length >= 3) {
-                const timeLine = lines[1];
-                const textLines = lines.slice(2);
-                const timeMatch = timeLine.match(/(\d{2}:\d{2}:\d{2})/);
-                const timeStamp = timeMatch ? timeMatch[1] : "00:00:00";
-                let text = textLines.join(' ').replace(/<\/?[^>]+(>|$)/g, "").trim();
-                if (text) parsedSubtitles.push({ time: timeStamp, text: text });
-            }
-        });
-        renderSubtitles(parsedSubtitles);
-    }
-
-    function renderSubtitles(subs) {
-        const container = document.getElementById('subtitle-container');
-        container.innerHTML = '';
-        
-        subs.forEach((sub, subIdx) => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'subtitle-item';
-            
-            const timeSpan = document.createElement('span');
-            timeSpan.className = 'sub-time';
-            timeSpan.innerText = '[' + sub.time + ']';
-            itemDiv.appendChild(timeSpan);
-            
-            const textDiv = document.createElement('div');
-            textDiv.className = 'sub-text';
-            
-            let words = sub.text.split(/\s+/);
-            words.forEach(word => {
-                let cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()??"„“'’]/g,"");
-                const wordSpan = document.createElement('span');
-                wordSpan.className = 'clickable-word';
-                wordSpan.innerText = word + ' ';
-                
-                wordSpan.onclick = function() {
-                    selectWord(subIdx, cleanWord);
-                };
-                
-                textDiv.appendChild(wordSpan);
-            });
-            
-            itemDiv.appendChild(textDiv);
-            container.appendChild(itemDiv);
-        });
-        
-        document.getElementById('loading-spinner').style.display = 'none';
-    }
-
-    function filterSubtitles() {
-        const query = document.getElementById('sub-search').value.toLowerCase();
-        const filtered = parsedSubtitles.filter(sub => sub.text.toLowerCase().includes(query) || sub.time.includes(query));
-        renderSubtitles(filtered);
-    }
-
-    function selectWord(subIdx, cleanWord) {
-        let apiKey = localStorage.getItem('groqApiKey');
-        let currentLang = document.getElementById('lang-select').value;
-        let langName = document.getElementById('lang-select').options[document.getElementById('lang-select').selectedIndex].text;
-
-        if (!apiKey) {
-            alert("Lütfen önce yukarıdaki alana Groq API Key tanımlayın!");
-            openModal();
-            return;
-        }
-
-        let fullContext = parsedSubtitles[subIdx].text;
-        document.getElementById('word-de').value = cleanWord;
-        document.getElementById('word-ctx').value = fullContext;
-        
-        document.getElementById('word-tr').value = "Analiz ediliyor... 🧠";
-        document.getElementById('sentence-tr').value = langName + " bağlamı çözülüyor... ⚡";
-        
-        switchTab('dictionary');
-        speakWord(cleanWord, currentLang);
-
-        const promptText = "Sen profesyonel bir çok dilli dilbilimci ve sözlüksün. Sana kaynak dilde bir kelime ve o kelimenin geçtiği film altyazı cümlesini vereceğim. Kelimenin o cümledeki tam bağlamsal anlamına odaklanarak bana sadece ve sadece Türkçe anlamlarını içeren şu JSON formatında cevap ver, asla açıklama veya markdown ekleme:\n" +
-        "{\"word_meaning\": \"kelimenin bu cümledeki net Türkçe karşılığı\", \"sentence_meaning\": \"cümlenin komple pürüzsüz Türkçe çevirisi\"}\n\n" +
-        "Kaynak Film Dili: " + langName + "\n" +
-        "Kelime: " + cleanWord + "\n" +
-        "İçinde Geçtiği Cümle: " + fullContext;
-
-        fetch('https://api.groq.com/openai/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + apiKey
-            },
-            body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
-                messages: [{ role: "user", content: promptText }],
-                temperature: 0.1
-            })
-        })
-        .then(res => {
-            if(!res.ok) throw new Error("API Hatası");
-            return res.json();
-        })
-        .then(data => {
-            if (data.choices && data.choices[0]) {
-                let responseContent = data.choices[0].message.content.trim();
-                responseContent = responseContent.replace(/```json/g, "").replace(/```/g, "").trim();
-                let resJson = JSON.parse(responseContent);
-                
-                document.getElementById('word-tr').value = resJson.word_meaning;
-                document.getElementById('sentence-tr').value = resJson.sentence_meaning;
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            document.getElementById('word-tr').value = "Hata! API Key veya bağlantı geçersiz.";
-            document.getElementById('sentence-tr').value = "İstek başarısız oldu.";
-        });
-    }
-
-    function addWordToDictionary() {
-        const de = document.getElementById('word-de').value.trim();
-        const tr = document.getElementById('word-tr').value.trim();
-        const str = document.getElementById('sentence-tr').value.trim();
-        const ctx = document.getElementById('word-ctx').value.trim();
-        const lang = document.getElementById('lang-select').value;
-
-        if(!de || !tr || tr.includes("ediliyor")) return;
-
-        myDictionary.push({ de, tr, str, ctx, lang });
-        localStorage.setItem('cineLingoDictV16', JSON.stringify(myDictionary));
-        
-        document.getElementById('word-de').value = '';
-        document.getElementById('word-tr').value = '';
-        document.getElementById('sentence-tr').value = '';
-        document.getElementById('word-ctx').value = '';
-        
-        filterDictionaryDisplay();
-        switchTab('stream');
-    }
-
-    function deleteWord(indexInGlobal) {
-        if(confirm("Silmek istediğine emin misin?")) {
-            myDictionary.splice(indexInGlobal, 1);
-            localStorage.setItem('cineLingoDictV16', JSON.stringify(myDictionary));
-            filterDictionaryDisplay();
-        }
-    }
-
-    function filterDictionaryDisplay() {
-        const currentLang = document.getElementById('lang-select').value;
-        const grid = document.getElementById('word-grid-container');
-        grid.innerHTML = '';
-        
-        let count = 0;
-        myDictionary.forEach((word, index) => {
-            if (word.lang === currentLang) {
-                count++;
-                
-                const cardDiv = document.createElement('div');
-                cardDiv.className = 'word-card';
-                
-                cardDiv.innerHTML = `
-                    <button class="delete-btn">Sil</button>
-                    <div class="word-card-header">
-                        <span class="lang-tag">${word
+            let matchedVoice =
