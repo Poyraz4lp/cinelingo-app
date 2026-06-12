@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v16.4</title>
+    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v16.5</title>
     <style>
         :root {
             --bg-main: #12141c;
@@ -418,8 +418,8 @@
 
 <div class="container">
     <header>
-        <h1>Cine<span>Lingo</span> AI v16.4</h1>
-        <p>Sesli Telaffuz Motorlu Evrensel Yapay Zeka Dil Laboratuvarı</p>
+        <h1>Cine<span>Lingo</span> AI v16.5</h1>
+        <p>Gelişmiş Doğal Aksan Motorlu Evrensel Yapay Zeka Dil Laboratuvarı</p>
     </header>
 
     <div class="config-section">
@@ -504,46 +504,61 @@
     let myDictionary = [];
     let currentCardIndex = 0;
     let isFlipped = false;
+    let availableVoices = [];
 
-    // 🛡️ HATA KORUMALI BAŞLANGIÇ MOTORU (Kilitlenmeyi önler)
     window.onload = function() {
-        try {
-            const savedData = localStorage.getItem('cineLingoDictV16');
-            if (savedData) {
-                myDictionary = JSON.parse(savedData);
-            }
-        } catch (e) {
-            console.error("Hafıza okuma hatası izole edildi, temiz sözlük açılıyor:", e);
-            myDictionary = [];
-            localStorage.setItem('cineLingoDictV16', JSON.stringify([]));
+        // Sistem seslerini arka planda hemen doldur
+        if ('speechSynthesis' in window) {
+            availableVoices = window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = function() {
+                availableVoices = window.speechSynthesis.getVoices();
+            };
+        }
+
+        const savedData = localStorage.getItem('cineLingoDictV16');
+        if (savedData) {
+            try { myDictionary = JSON.parse(savedData); } catch(e) { myDictionary = []; }
         }
         
-        try {
-            const savedKey = localStorage.getItem('groqApiKey');
-            if (savedKey) document.getElementById('api-key-input').value = savedKey;
-            
-            const savedLang = localStorage.getItem('targetLanguage');
-            if (savedLang) document.getElementById('lang-select').value = savedLang;
+        const savedKey = localStorage.getItem('groqApiKey');
+        if (savedKey) document.getElementById('api-key-input').value = savedKey;
+        
+        const savedLang = localStorage.getItem('targetLanguage');
+        if (savedLang) document.getElementById('lang-select').value = savedLang;
 
-            const hasVisited = localStorage.getItem('hasVisitedCineLingo');
-            if (!hasVisited) {
-                document.getElementById('welcome-modal').style.display = 'flex';
-            }
-        } catch (e) {
-            console.error("Config ayarları yüklenirken hata oluştu:", e);
+        const hasVisited = localStorage.getItem('hasVisitedCineLingo');
+        if (!hasVisited) {
+            document.getElementById('welcome-modal').style.display = 'flex';
         }
 
         filterDictionaryDisplay();
         document.getElementById('sub-search').addEventListener('input', filterSubtitles);
     };
 
+    // 🌟 AKILLI DOĞAL AKSAN MOTORU (Zorunlu Orijinal Dil Filtreleme)
     function speakWord(text, langCode) {
         if ('speechSynthesis' in window) {
             window.speechSynthesis.cancel();
             let utterance = new SpeechSynthesisUtterance(text);
+            
+            // Dil kodlarının pürüzsüz yerel eşleşmeleri
             let langMapping = { 'de': 'de-DE', 'en': 'en-US', 'fr': 'fr-FR', 'es': 'es-ES', 'it': 'it-IT' };
-            utterance.lang = langMapping[langCode] || 'de-DE';
-            utterance.rate = 0.85; 
+            let targetLangPattern = langMapping[langCode] || 'de-DE';
+            
+            utterance.lang = targetLangPattern;
+            utterance.rate = 0.82; // Doğal kavrama için mükemmel akıcılık hızı
+            
+            // Tarayıcı listesinden Türkçe sesleri ele, sadece orijinal dile uyan gerçek sesleri bul
+            let exactVoice = availableVoices.find(voice => 
+                voice.lang.toLowerCase().replace('_', '-') === targetLangPattern.toLowerCase() || 
+                voice.lang.toLowerCase().startsWith(langCode)
+            );
+            
+            // Bulduysan o orijinal sesi zorla yükle (Türkçe okumayı imkansız hale getirir)
+            if (exactVoice) {
+                utterance.voice = exactVoice;
+            }
+            
             window.speechSynthesis.speak(utterance);
         }
     }
