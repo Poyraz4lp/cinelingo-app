@@ -26,7 +26,7 @@
             padding: 20px;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container { max-width: 1500px; margin: 0 auto; }
 
         header {
             text-align: center;
@@ -512,6 +512,203 @@
         }
         .copy-scene-btn:hover { border-color: var(--secondary); color: var(--secondary); }
 
+        /* YENİ: Video + Altyazı yan yana düzen */
+        .stream-layout {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        .stream-video-col {
+            display: none;
+            flex: 0 0 44%;
+            max-width: 44%;
+        }
+        .stream-layout.video-active .stream-video-col {
+            display: block;
+        }
+        .stream-subs-col {
+            flex: 1;
+            min-width: 0;
+        }
+        @media (max-width: 900px) {
+            .stream-layout { flex-direction: column; }
+            .stream-video-col { max-width: 100%; flex: 1 1 auto; }
+        }
+
+        /* YENİ: Video oynatıcı entegrasyonu */
+        .video-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .video-player-wrap {
+            position: sticky;
+            top: 10px;
+            z-index: 50;
+        }
+
+        /* YENİ: Vintage televizyon çerçevesi */
+        .tv-frame {
+            position: relative;
+            background: linear-gradient(155deg, #6b4527 0%, #4a2f18 55%, #32200e 100%);
+            border-radius: 22px;
+            padding: 26px 22px 36px 22px;
+            box-shadow:
+                0 12px 28px rgba(0,0,0,0.55),
+                inset 0 0 0 3px rgba(0,0,0,0.3),
+                inset 0 2px 6px rgba(255,255,255,0.08);
+            margin-top: 28px;
+        }
+        .tv-antenna {
+            position: absolute;
+            top: -32px;
+            left: 50%;
+            width: 110px;
+            height: 36px;
+            transform: translateX(-50%);
+            pointer-events: none;
+        }
+        .tv-antenna span {
+            position: absolute;
+            bottom: 0;
+            width: 3px;
+            height: 36px;
+            background: linear-gradient(#aaa, #777);
+            border-radius: 2px;
+            transform-origin: bottom center;
+        }
+        .tv-antenna span:first-child { left: 38px; transform: rotate(-28deg); }
+        .tv-antenna span:last-child { left: 68px; transform: rotate(28deg); }
+        .tv-antenna::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 8px;
+            background: #555;
+            border-radius: 3px;
+        }
+        .tv-screen-bezel {
+            position: relative;
+            background: #0a0a0a;
+            border-radius: 14px;
+            padding: 12px;
+            box-shadow: inset 0 0 22px rgba(0,0,0,0.9), inset 0 0 0 2px rgba(255,255,255,0.04);
+            overflow: hidden;
+        }
+        .tv-screen-bezel video {
+            width: 100%;
+            max-height: 480px;
+            border-radius: 6px;
+            background: #000;
+            display: block;
+        }
+        .tv-screen-glare {
+            position: absolute;
+            inset: 12px;
+            border-radius: 6px;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at 28% 18%, rgba(255,255,255,0.10), transparent 45%),
+                radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.40) 100%);
+        }
+        .tv-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            margin-top: 18px;
+        }
+        .tv-knob {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #d8d8d8, #8a8a8a 65%, #555 100%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            position: relative;
+            flex-shrink: 0;
+        }
+        .tv-knob::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 50%;
+            width: 2px;
+            height: 9px;
+            background: #3a3a3a;
+            transform: translateX(-50%);
+            border-radius: 1px;
+        }
+        .tv-led {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 8px var(--primary);
+            flex-shrink: 0;
+        }
+        .tv-label {
+            font-size: 0.68rem;
+            letter-spacing: 3px;
+            color: #d8b88a;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+        }
+
+        /* YENİ: Video uyarı kutusu (codec sorunları için) */
+        .video-warning {
+            display: none;
+            background: rgba(255,180,0,0.1);
+            border: 1px solid rgba(255,180,0,0.4);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #ffd580;
+            line-height: 1.6;
+        }
+        .video-warning.show { display: block; }
+
+        .video-controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .video-controls-row label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .subtitle-item.active-subtitle {
+            background: rgba(0, 176, 255, 0.08);
+            border-left: 3px solid var(--secondary);
+            padding-left: 10px;
+            border-radius: 0 8px 8px 0;
+        }
+        .goto-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--secondary);
+            padding: 3px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin-left: 6px;
+            transition: all 0.2s;
+        }
+        .goto-btn:hover { background: var(--secondary); color: #12141c; }
+
         /* YENİ: Zaten var uyarısı */
         .duplicate-toast {
             position: fixed;
@@ -575,6 +772,27 @@
         .quiz-result .result-emoji { font-size: 4rem; margin-bottom: 10px; }
         .quiz-result .result-score { font-size: 2.5rem; font-weight: 800; margin-bottom: 8px; }
         .quiz-result .result-msg { color: var(--text-light); margin-bottom: 25px; }
+
+        /* VIDEO OYNATICI */
+        .video-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px; overflow: hidden; display: none; }
+        .video-section.visible { display: block; }
+        .video-wrapper { position: relative; background: #000; }
+        #main-video { width: 100%; max-height: 480px; display: block; background: #000; }
+        .video-subtitle-overlay { position: absolute; bottom: 54px; left: 0; right: 0; text-align: center; pointer-events: none; padding: 0 20px; }
+        .video-subtitle-overlay span { display: inline-block; background: rgba(0,0,0,0.78); color: #fff; font-size: 1.25rem; font-weight: 600; padding: 6px 16px; border-radius: 6px; line-height: 1.6; max-width: 90%; }
+        .video-controls { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #0d0f18; flex-wrap: wrap; }
+        .vc-btn { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 7px 14px; border-radius: 7px; cursor: pointer; font-size: 0.9rem; font-weight: 600; white-space: nowrap; transition: background 0.15s; }
+        .vc-btn:hover { background: var(--border); }
+        .vc-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+        .vc-time { font-size: 0.85rem; color: var(--text-light); font-family: monospace; min-width: 120px; }
+        .vc-progress { flex: 1; height: 5px; background: var(--border); border-radius: 3px; cursor: pointer; min-width: 80px; }
+        .vc-progress-fill { height: 100%; background: var(--primary); border-radius: 3px; pointer-events: none; }
+        .vc-speed { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 6px 8px; border-radius: 7px; font-size: 0.85rem; cursor: pointer; }
+        .subtitle-item.active-sub { background: rgba(0,176,255,0.07); border-left: 3px solid var(--secondary); padding-left: 11px; border-radius: 6px; }
+        .video-upload-prompt { padding: 28px; text-align: center; color: var(--text-light); }
+        .video-upload-prompt p { margin: 0 0 12px 0; font-size: 0.95rem; }
+        .paused-badge { position: absolute; top: 12px; left: 12px; background: rgba(255,42,95,0.85); color: white; font-size: 0.8rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; display: none; }
+        .paused-badge.visible { display: block; }
     </style>
 </head>
 <body>
@@ -600,6 +818,13 @@
         <div class="step-item">
             <p><strong><span class="step-number">3</span> Kelimelere Tıkla, Dinle ve Ezberle:</strong><br>
             Altyazı akışında bilmediğin kelimenin üzerine tıkla. Yapay zeka anlamını çıkarırken yerel ses motoru kelimeyi orijinal aksanıyla okuyacaktır.</p>
+        </div>
+
+        <div style="background: rgba(255,180,0,0.1); border: 1px solid rgba(255,180,0,0.4); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start;">
+            <span style="font-size: 1.2rem; flex-shrink:0;">⚠️</span>
+            <p style="margin:0; font-size: 0.88rem; color: #ffd580; line-height: 1.6;">
+                <strong>Tarayıcı Uyarısı:</strong> Telaffuz (ses) özelliği <strong>Opera</strong> tarayıcısında düzgün çalışmayabilir. Opera, Web Speech API'yi kısıtlı destekler. En iyi deneyim için <strong>Chrome</strong> veya <strong>Edge</strong> kullanmanı öneririz.
+            </p>
         </div>
 
         <button class="modal-close-btn" onclick="closeModal()">Anladım, Harika! Başlayalım 🍿</button>
@@ -636,6 +861,8 @@
         <p style="margin: 0 0 12px 0; font-weight: 500;">Altyazı dosyanızı sürükle bırak veya seç:</p>
         <input type="file" id="srt-file" accept=".srt" style="display: none;" onchange="handleFileSelect(event)">
         <button class="upload-btn" onclick="document.getElementById('srt-file').click()">Altyazı Dosyası Seç</button>
+        <input type="file" id="video-file" accept="video/*" style="display: none;" onchange="handleVideoSelect(event)">
+        <button class="upload-btn" style="background: var(--secondary); color: #12141c;" onclick="document.getElementById('video-file').click()">🎥 Video Dosyası Seç</button>
         <button class="backup-btn" onclick="exportDictionary()">Kelimelerimi TXT Olarak Yedekle</button>
         <button class="backup-btn" onclick="exportJSON()">JSON Olarak Yedekle</button>
         <div id="file-info" style="margin-top: 10px; color: var(--secondary); font-weight: bold;"></div>
@@ -651,14 +878,51 @@
 
     <!-- ALTYAZI AKIŞI -->
     <div id="stream" class="tab-content active">
-        <input type="text" class="search-box" id="sub-search" placeholder="Altyazı satırlarında ara...">
-        
-        <div id="loading-spinner" class="loading-overlay">
-            🎬 Altyazı dosyası işleniyor ve butonlara dönüştürülüyor. Lütfen bekleyin... ⏳
-        </div>
-        
-        <div class="subtitle-stream" id="subtitle-container">
-            <p style="text-align: center; color: var(--text-light);">Lütfen çalışmak istediğiniz .srt dosyasını yükleyin.</p>
+
+        <div class="stream-layout" id="stream-layout">
+            <!-- YENİ: Video oynatıcı (sol kolon) -->
+            <div class="stream-video-col">
+                <div class="video-section" id="video-section">
+                    <div class="video-player-wrap">
+                        <div class="tv-frame">
+                            <div class="tv-antenna"><span></span><span></span></div>
+                            <div class="tv-screen-bezel">
+                                <video id="video-player" controls></video>
+                                <div class="tv-screen-glare"></div>
+                            </div>
+                            <div class="tv-controls">
+                                <div class="tv-led"></div>
+                                <div class="tv-knob"></div>
+                                <div class="tv-knob"></div>
+                                <span class="tv-label">CineLingo TV</span>
+                                <div class="tv-knob"></div>
+                                <div class="tv-knob"></div>
+                            </div>
+                        </div>
+                        <div class="video-controls-row">
+                            <label>
+                                <input type="checkbox" id="autoscroll-toggle" checked>
+                                Aktif sahneye otomatik kaydır
+                            </label>
+                            <span style="color: var(--text-light); font-size: 0.85rem;" id="video-filename"></span>
+                        </div>
+                        <div class="video-warning" id="video-warning"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Altyazı listesi (sağ kolon / video yoksa tam genişlik) -->
+            <div class="stream-subs-col">
+                <input type="text" class="search-box" id="sub-search" placeholder="Altyazı satırlarında ara...">
+
+                <div id="loading-spinner" class="loading-overlay">
+                    🎬 Altyazı dosyası işleniyor ve butonlara dönüştürülüyor. Lütfen bekleyin... ⏳
+                </div>
+
+                <div class="subtitle-stream" id="subtitle-container">
+                    <p style="text-align: center; color: var(--text-light);">Lütfen çalışmak istediğiniz .srt dosyasını yükleyin.</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -869,8 +1133,17 @@
                 const textLines = lines.slice(2);
                 const timeMatch = timeLine.match(/(\d{2}:\d{2}:\d{2})/);
                 const timeStamp = timeMatch ? timeMatch[1] : "00:00:00";
+
+                // YENİ: Video senkronizasyonu için başlangıç/bitiş süresini saniyeye çevir
+                const rangeMatch = timeLine.match(/(\d{2}):(\d{2}):(\d{2})[.,](\d{1,3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})[.,](\d{1,3})/);
+                let startSec = 0, endSec = 0;
+                if (rangeMatch) {
+                    startSec = (+rangeMatch[1]) * 3600 + (+rangeMatch[2]) * 60 + (+rangeMatch[3]) + (+rangeMatch[4]) / 1000;
+                    endSec = (+rangeMatch[5]) * 3600 + (+rangeMatch[6]) * 60 + (+rangeMatch[7]) + (+rangeMatch[8]) / 1000;
+                }
+
                 let text = textLines.join(' ').replace(/<\/?[^>]+(>|$)/g, "").trim();
-                if (text) parsedSubtitles.push({ time: timeStamp, text: text });
+                if (text) parsedSubtitles.push({ time: timeStamp, text: text, startSec: startSec, endSec: endSec });
             }
         });
         renderSubtitles(parsedSubtitles);
@@ -891,6 +1164,9 @@
         subs.forEach((sub, subIdx) => {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'subtitle-item';
+            // YENİ: Video senkronizasyonu için zaman verisi
+            itemDiv.dataset.start = sub.startSec || 0;
+            itemDiv.dataset.end = sub.endSec || 0;
             
             const timeSpan = document.createElement('span');
             timeSpan.className = 'sub-time';
@@ -906,6 +1182,17 @@
 
             itemDiv.appendChild(timeSpan);
             itemDiv.appendChild(copyBtn);
+
+            // YENİ: Videoda bu sahneye git butonu
+            if (sub.endSec > 0) {
+                const gotoBtn = document.createElement('button');
+                gotoBtn.className = 'goto-btn';
+                gotoBtn.innerText = '▶ Sahneye git';
+                gotoBtn.onclick = function() {
+                    seekToSubtitle(sub.startSec);
+                };
+                itemDiv.appendChild(gotoBtn);
+            }
             
             const textDiv = document.createElement('div');
             textDiv.className = 'sub-text';
@@ -1449,13 +1736,110 @@
         return arr;
     }
 
+    // ==================== YENİ: VİDEO ENTEGRASYONU ====================
+
+    function handleVideoSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        loadVideoFile(file);
+    }
+
+    function loadVideoFile(file) {
+        const video = document.getElementById('video-player');
+        const url = URL.createObjectURL(file);
+        hideVideoWarning();
+        video.src = url;
+        document.getElementById('stream-layout').classList.add('video-active');
+        document.getElementById('video-filename').innerText = '🎥 ' + file.name;
+        showToast('Video yüklendi: ' + file.name);
+    }
+
+    // YENİ: Codec uyumsuzluğu teşhisi — ses çalışıp görüntü gelmiyorsa kullanıcıyı bilgilendir
+    function showVideoWarning(msg) {
+        const box = document.getElementById('video-warning');
+        box.innerHTML = msg;
+        box.classList.add('show');
+    }
+    function hideVideoWarning() {
+        const box = document.getElementById('video-warning');
+        box.classList.remove('show');
+        box.innerHTML = '';
+    }
+    function checkVideoPlayback() {
+        const video = document.getElementById('video-player');
+        // Bir kare çözülmüş mü kontrol et: videoWidth/videoHeight 0 ise görüntü kanalı oynatılamıyor demektir
+        setTimeout(() => {
+            if (video.readyState >= 1 && (video.videoWidth === 0 || video.videoHeight === 0)) {
+                showVideoWarning(
+                    '⚠️ <strong>Görüntü gelmiyor, sadece ses çalışıyor.</strong><br>' +
+                    'Bu genellikle video dosyasının <strong>HEVC/H.265</strong> gibi tarayıcının desteklemediği bir codec ile sıkıştırılmış olmasından kaynaklanır (Opera ve diğer Chromium tabanlı tarayıcılar bu codec\'i çoğunlukla desteklemez, ama AAC sesi çalabilir).<br><br>' +
+                    '<strong>Çözüm:</strong> Dosyayı HandBrake gibi bir programla <strong>H.264 (MP4)</strong> formatına dönüştürüp tekrar yükleyin. Codec\'i kontrol etmek için dosya adında "x265", "HEVC" veya "H265" geçip geçmediğine bakabilirsiniz.'
+                );
+            }
+        }, 600);
+    }
+
+    // Altyazı satırındaki "Sahneye git" butonu -> videoyu o zamana sar ve oynat
+    function seekToSubtitle(startSec) {
+        const video = document.getElementById('video-player');
+        if (!video.src) {
+            showToast('Önce bir video dosyası yükleyin!');
+            return;
+        }
+        video.currentTime = startSec;
+        video.play();
+    }
+
+    // Video oynarken aktif altyazıyı vurgula ve (isteğe bağlı) ekranı kaydır
+    function syncSubtitles() {
+        const video = document.getElementById('video-player');
+        const t = video.currentTime;
+        const items = document.querySelectorAll('.subtitle-item');
+        const autoscroll = document.getElementById('autoscroll-toggle').checked;
+
+        let activeItem = null;
+        items.forEach(item => {
+            const start = parseFloat(item.dataset.start || 0);
+            const end = parseFloat(item.dataset.end || 0);
+            if (end > 0 && t >= start && t <= end) {
+                item.classList.add('active-subtitle');
+                activeItem = item;
+            } else {
+                item.classList.remove('active-subtitle');
+            }
+        });
+
+        if (activeItem && autoscroll) {
+            activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    // Video player hazır olduğunda dinleyicileri bağla
+    (function initVideoSync() {
+        const video = document.getElementById('video-player');
+        if (video) {
+            video.addEventListener('timeupdate', syncSubtitles);
+            // YENİ: Codec teşhisi
+            video.addEventListener('loadeddata', checkVideoPlayback);
+            video.addEventListener('error', function() {
+                showVideoWarning('❌ Video dosyası açılamadı. Format desteklenmiyor olabilir. MP4 (H.264) formatında bir dosya deneyin.');
+            });
+        }
+    })();
+
     // Drag & drop (aynen korundu)
     const dropZone = document.getElementById('drop-zone');
     dropZone.addEventListener('dragover', (e) => e.preventDefault());
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
         const file = e.dataTransfer.files[0];
-        if(file && file.name.endsWith('.srt')) processSrtFile(file);
+        if(!file) return;
+        if(file.name.endsWith('.srt')) {
+            processSrtFile(file);
+        } else if(file.type.startsWith('video/')) {
+            // YENİ: video dosyası sürükle-bırak desteği
+            loadVideoFile(file);
+        }
     });
 </script>
 
