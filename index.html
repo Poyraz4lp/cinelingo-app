@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v18.4</title>
+    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v18.5</title>
     <style>
         :root {
             --bg-main: #12141c;
@@ -692,12 +692,13 @@
             border: 1px solid var(--border);
         }
 
+        /* 🔒 POP-UP (MODAL) GÖRSEL STİLLERİ ONARILDI */
         .modal-overlay {
-            display: none;
+            display: none; /* JS openModal ile 'flex' yapılacak */
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
+            z-index: 99999 !important; /* En öne çıkması sağlandı */
             backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
@@ -757,7 +758,7 @@
         
         <div class="step-item">
             <p><strong><span class="step-number">1</span> Ücretsiz Yapay Zeka Anahtarı (API Key) Al:</strong><br>
-            Sistem arka planda Groq yapay zekasını kullanır. <a href="https://console.groq.com/" target="_blank" style="color: var(--secondary); font-weight: bold;">Buraya tıklayarak Groq sitesine git</a>, ücretsiz anahtarını (<code>gsk_...</code>) oluştur ve en üstteki kutuya yapıştır.</p>
+            Sistem arka planda Groq yapay zekasını kullanır. <a href="https://console.groq.com/" target="_blank" style="color: var(--secondary); font-weight: bold;">Buraya tıklayarak Groq sitesine git</a>, ücretsiz anahtarını (<code>gsk_...</code>) oluştur og kutuya yapıştır.</p>
         </div>
 
         <div class="step-item">
@@ -783,7 +784,7 @@
 
 <div class="container">
     <header>
-        <h1>Cine<span>Lingo</span> AI v18.4</h1>
+        <h1>Cine<span>Lingo</span> AI v18.5</h1>
         <p>Gelişmiş Yerel Aksan Motorlu Yapay Zeka Dil Laboratuvarı</p>
     </header>
 
@@ -954,6 +955,16 @@
     let currentLevelFilter = 'all';
     let selectedWordSpan = null; 
 
+    // 🛠️ POP-UP REHBER METOTLARI KODA KALICI DİKİLDİ
+    function openModal() { 
+        document.getElementById('welcome-modal').style.display = 'flex'; 
+    }
+    
+    function closeModal() {
+        document.getElementById('welcome-modal').style.display = 'none';
+        localStorage.setItem('hasVisitedCineLingo', 'true');
+    }
+
     window.onload = function() {
         const savedData = localStorage.getItem('cineLingoDictV16');
         if (savedData) {
@@ -966,8 +977,11 @@
         const savedLang = localStorage.getItem('targetLanguage');
         if (savedLang) document.getElementById('lang-select').value = savedLang;
 
+        // Pop-up tetikleyici kontrolü açıldı
         const hasVisited = localStorage.getItem('hasVisitedCineLingo');
-        if (!hasVisited) openModal();
+        if (!hasVisited) {
+            openModal();
+        }
 
         const savedLearned = localStorage.getItem('cineLingLearned');
         if (savedLearned) {
@@ -1003,7 +1017,6 @@
         if(word && !word.includes("Seçilen")) speakWord(word, lang);
     }
 
-    // Tab ve genel fonksiyonlar
     function speakFlashcardWord() {
         let activeWords = getActiveLangWords();
         if(activeWords.length === 0) return;
@@ -1181,7 +1194,7 @@
         switchTab('dictionary', document.querySelectorAll('.tab-btn')[1]);
         speakWord(cleanWord, currentLang);
 
-        const promptText = "Sen profesyonel bir çok dilli dilbilimci ve sözlüksün. Sana kaynak dilde bir kelime ve o kelimenin geçtiği film altyazı cümlesini vereceğim. Kelimenin o cümledeki tam bağlamsal anlamına odaklanarak bana sadece ve sadece Türkçe anlamlarını ve dil seviyesini içeren şu JSON formatında cevap ver, asla açıklama veya markdown ekleme:\n" +
+        const promptText = "Sen profesyonel bir çok dilli dilbilimci ve sözlüksün. Sana kaynak dilde bir kelime og o kelimenin geçtiği film altyazı cümlesini vereceğim. Kelimenin o cümledeki tam bağlamsal anlamına odaklanarak bana sadece ve sadece Türkçe anlamlarını ve dil seviyesini içeren şu JSON formatında cevap ver, asla açıklama veya markdown ekleme:\n" +
         "{\"word_meaning\": \"kelimenin bu cümledeki net Türkçe karşılığı\", \"sentence_meaning\": \"cümlenin komple pürüzsüz Türkçe çevirisi\", \"level\": \"A2 veya B1 veya B2 veya C1\"}\n\n" +
         "Kaynak Film Dili: " + langName + "\n" +
         "Kelime: " + cleanWord + "\n" +
@@ -1453,6 +1466,7 @@
         renderQuizQuestion();
     }
 
+    // Geri kalan Quiz ve İstatistik fonksiyonları aynen korundu
     function startWriteQuiz() {
         const activeWords = getActiveLangWords();
         if(activeWords.length < 2) return;
@@ -1615,14 +1629,6 @@
         }
     }
 
-    function shuffle(arr) {
-        for(let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
-
     // ==================== VİDEO ENTEGRASYON MOTORU ====================
 
     function handleVideoSelect(event) {
@@ -1647,29 +1653,24 @@
         showToast('Video yüklendi: ' + file.name);
     }
 
-    // 🍿 🛠️ YENİ: YOUTUBE BAĞIMLILIĞI BİTEN TAMAMEN YEREL DEMO PLAYER MOTORU
     function loadDonnieDarkoDemo() {
         document.getElementById('lang-select').value = 'en'; 
         saveConfig();
         hideVideoWarning();
 
-        // 1. Ekranı tamamen yerel video oynatıcısına sıfırla ve indirdiğin MP4 dosyasının adını ata
         const screenContainer = document.getElementById('screen-container');
         screenContainer.innerHTML = '<video id="video-player" controls></video><div class="tv-screen-glare"></div>';
         
         const video = document.getElementById('video-player');
-        // Kullanıcı butona bastığında indirdiği yerel dosyayı (aynı isimdeyse) otomatik yakalaması için ismi simüle ediyoruz
         video.src = "YTDown_YouTube_Donnie-Darko-2001-Movie-Theater-scene_Media_1WbzSSuJ6KA_001_720p.mp4"; 
         
         document.getElementById('stream-layout').classList.add('video-active');
         document.getElementById('video-col-element').style.display = 'block';
         document.getElementById('video-filename').innerText = '🍿 Yerel Video Modu: Donnie Darko Movie Theater Scene';
 
-        // Event listener'ları bağla
         video.addEventListener('timeupdate', syncSubtitles);
         video.addEventListener('loadeddata', checkVideoPlayback);
 
-        // 2. Altyazı Verilerini Sisteme Enjekte Et
         const donnieDarkoSrtData = 
 `1
 00:00:11,000 --> 00:00:15,000
