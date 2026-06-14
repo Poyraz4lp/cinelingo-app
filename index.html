@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v18.0</title>
+    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v18.4</title>
     <style>
         :root {
             --bg-main: #12141c;
@@ -149,7 +149,7 @@
             background: var(--bg-card);
             padding: 25px;
             border-radius: 16px;
-            max-height: 550px;
+            max-height: 650px;
             overflow-y: auto;
             border: 1px solid var(--border);
         }
@@ -167,6 +167,7 @@
         .subtitle-item {
             border-bottom: 1px solid var(--border);
             padding: 14px 0;
+            transition: background 0.2s;
         }
 
         .sub-time { font-size: 0.85rem; color: var(--secondary); font-weight: bold; }
@@ -183,7 +184,6 @@
         }
         .clickable-word:hover { background-color: var(--primary); color: white; }
 
-        /* YENİ: Zaten öğrenilen kelime highlight */
         .clickable-word.known-word {
             background-color: rgba(0, 230, 118, 0.15);
             border-bottom: 2px solid var(--success);
@@ -191,7 +191,6 @@
         }
         .clickable-word.known-word:hover { background-color: rgba(0,230,118,0.3); }
 
-        /* YENİ: Tıklanan kelime highlight */
         .clickable-word.selected-word {
             background-color: rgba(255, 42, 95, 0.3);
             border-bottom: 2px solid var(--primary);
@@ -289,7 +288,6 @@
         .word-card .context { font-size: 0.9rem; color: var(--text-light); background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; }
         .word-card .lang-tag { font-size: 0.75rem; color: var(--primary); border: 1px solid var(--primary); padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase;}
 
-        /* YENİ: Seviye etiketi */
         .level-tag {
             font-size: 0.75rem;
             padding: 2px 8px;
@@ -351,7 +349,6 @@
             right: 20px;
         }
 
-        /* YENİ: Flashcard progress */
         .card-progress {
             position: absolute;
             top: 20px;
@@ -377,11 +374,9 @@
             font-size: 1rem;
         }
 
-        /* YENİ: Biliyorum / Bilmiyorum butonları */
         .btn-know { background: var(--success); color: #12141c; }
         .btn-dontknow { background: var(--primary); color: white; }
 
-        /* YENİ: İstatistik bar */
         .stats-bar {
             display: flex;
             gap: 16px;
@@ -400,7 +395,6 @@
         .stat-num { font-size: 1.8rem; font-weight: 800; }
         .stat-label { font-size: 0.8rem; color: var(--text-light); margin-top: 4px; }
 
-        /* YENİ: Quiz modu */
         .quiz-container {
             max-width: 600px;
             margin: 30px auto;
@@ -467,7 +461,6 @@
             box-sizing: border-box;
         }
 
-        /* YENİ: Sözlük arama + filtre */
         .dict-toolbar {
             display: flex;
             gap: 10px;
@@ -498,7 +491,6 @@
         }
         .filter-btn.active { border-color: var(--secondary); color: var(--secondary); }
 
-        /* YENİ: Sahne kopyala */
         .copy-scene-btn {
             background: none;
             border: 1px solid var(--border);
@@ -512,16 +504,15 @@
         }
         .copy-scene-btn:hover { border-color: var(--secondary); color: var(--secondary); }
 
-        /* YENİ: Video + Altyazı yan yana düzen */
         .stream-layout {
             display: flex;
             gap: 20px;
             align-items: flex-start;
         }
         .stream-video-col {
-            display: none;
-            flex: 0 0 44%;
-            max-width: 44%;
+            display: none; 
+            flex: 0 0 45%;
+            max-width: 45%;
         }
         .stream-layout.video-active .stream-video-col {
             display: block;
@@ -535,31 +526,14 @@
             .stream-video-col { max-width: 100%; flex: 1 1 auto; }
         }
 
-        /* YENİ: Video oynatıcı entegrasyonu */
-        .video-section {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-        .video-player-wrap {
-            position: sticky;
-            top: 10px;
-            z-index: 50;
-        }
-
-        /* YENİ: Vintage televizyon çerçevesi */
         .tv-frame {
             position: relative;
             background: linear-gradient(155deg, #6b4527 0%, #4a2f18 55%, #32200e 100%);
             border-radius: 22px;
             padding: 26px 22px 36px 22px;
-            box-shadow:
-                0 12px 28px rgba(0,0,0,0.55),
-                inset 0 0 0 3px rgba(0,0,0,0.3),
-                inset 0 2px 6px rgba(255,255,255,0.08);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.55);
             margin-top: 28px;
+            z-index: 1;
         }
         .tv-antenna {
             position: absolute;
@@ -581,41 +555,37 @@
         }
         .tv-antenna span:first-child { left: 38px; transform: rotate(-28deg); }
         .tv-antenna span:last-child { left: 68px; transform: rotate(28deg); }
-        .tv-antenna::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 16px;
-            height: 8px;
-            background: #555;
-            border-radius: 3px;
-        }
+        
         .tv-screen-bezel {
             position: relative;
             background: #0a0a0a;
             border-radius: 14px;
             padding: 12px;
-            box-shadow: inset 0 0 22px rgba(0,0,0,0.9), inset 0 0 0 2px rgba(255,255,255,0.04);
+            box-shadow: inset 0 0 22px rgba(0,0,0,0.9);
             overflow: hidden;
+            z-index: 2;
         }
+        
         .tv-screen-bezel video {
-            width: 100%;
+            width: 100% !important;
+            height: auto !important;
             max-height: 480px;
             border-radius: 6px;
             background: #000;
-            display: block;
+            display: block !important;
+            position: relative;
+            z-index: 5; 
         }
+        
         .tv-screen-glare {
             position: absolute;
             inset: 12px;
             border-radius: 6px;
             pointer-events: none;
-            background:
-                radial-gradient(ellipse at 28% 18%, rgba(255,255,255,0.10), transparent 45%),
-                radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.40) 100%);
+            z-index: 6; 
+            background: radial-gradient(ellipse at 28% 18%, rgba(255,255,255,0.06), transparent 45%);
         }
+        
         .tv-controls {
             display: flex;
             align-items: center;
@@ -641,7 +611,6 @@
             height: 9px;
             background: #3a3a3a;
             transform: translateX(-50%);
-            border-radius: 1px;
         }
         .tv-led {
             width: 9px;
@@ -657,10 +626,8 @@
             color: #d8b88a;
             font-weight: 700;
             text-transform: uppercase;
-            text-shadow: 0 1px 1px rgba(0,0,0,0.4);
         }
 
-        /* YENİ: Video uyarı kutusu (codec sorunları için) */
         .video-warning {
             display: none;
             background: rgba(255,180,0,0.1);
@@ -690,12 +657,13 @@
             font-size: 0.9rem;
             cursor: pointer;
         }
+        
         .subtitle-item.active-subtitle {
-            background: rgba(0, 176, 255, 0.08);
-            border-left: 3px solid var(--secondary);
+            background: rgba(0, 176, 255, 0.12) !important;
+            border-left: 4px solid var(--secondary) !important;
             padding-left: 10px;
-            border-radius: 0 8px 8px 0;
         }
+        
         .goto-btn {
             background: none;
             border: 1px solid var(--border);
@@ -709,7 +677,6 @@
         }
         .goto-btn:hover { background: var(--secondary); color: #12141c; }
 
-        /* YENİ: Zaten var uyarısı */
         .duplicate-toast {
             position: fixed;
             bottom: 30px;
@@ -764,7 +731,6 @@
             margin-top: 10px;
         }
 
-        /* YENİ: Quiz sonuç ekranı */
         .quiz-result {
             text-align: center;
             padding: 40px 20px;
@@ -773,31 +739,15 @@
         .quiz-result .result-score { font-size: 2.5rem; font-weight: 800; margin-bottom: 8px; }
         .quiz-result .result-msg { color: var(--text-light); margin-bottom: 25px; }
 
-        /* VIDEO OYNATICI */
-        .video-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px; overflow: hidden; display: none; }
-        .video-section.visible { display: block; }
-        .video-wrapper { position: relative; background: #000; }
-        #main-video { width: 100%; max-height: 480px; display: block; background: #000; }
-        .video-subtitle-overlay { position: absolute; bottom: 54px; left: 0; right: 0; text-align: center; pointer-events: none; padding: 0 20px; }
-        .video-subtitle-overlay span { display: inline-block; background: rgba(0,0,0,0.78); color: #fff; font-size: 1.25rem; font-weight: 600; padding: 6px 16px; border-radius: 6px; line-height: 1.6; max-width: 90%; }
-        .video-controls { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #0d0f18; flex-wrap: wrap; }
-        .vc-btn { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 7px 14px; border-radius: 7px; cursor: pointer; font-size: 0.9rem; font-weight: 600; white-space: nowrap; transition: background 0.15s; }
-        .vc-btn:hover { background: var(--border); }
-        .vc-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
-        .vc-time { font-size: 0.85rem; color: var(--text-light); font-family: monospace; min-width: 120px; }
-        .vc-progress { flex: 1; height: 5px; background: var(--border); border-radius: 3px; cursor: pointer; min-width: 80px; }
-        .vc-progress-fill { height: 100%; background: var(--primary); border-radius: 3px; pointer-events: none; }
-        .vc-speed { background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main); padding: 6px 8px; border-radius: 7px; font-size: 0.85rem; cursor: pointer; }
-        .subtitle-item.active-sub { background: rgba(0,176,255,0.07); border-left: 3px solid var(--secondary); padding-left: 11px; border-radius: 6px; }
-        .video-upload-prompt { padding: 28px; text-align: center; color: var(--text-light); }
-        .video-upload-prompt p { margin: 0 0 12px 0; font-size: 0.95rem; }
-        .paused-badge { position: absolute; top: 12px; left: 12px; background: rgba(255,42,95,0.85); color: white; font-size: 0.8rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; display: none; }
-        .paused-badge.visible { display: block; }
+        .video-player-wrap {
+            position: sticky;
+            top: 10px;
+            z-index: 50;
+        }
     </style>
 </head>
 <body>
 
-<!-- Toast bildirimi -->
 <div class="duplicate-toast" id="toast"></div>
 
 <div id="welcome-modal" class="modal-overlay">
@@ -823,7 +773,7 @@
         <div style="background: rgba(255,180,0,0.1); border: 1px solid rgba(255,180,0,0.4); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 10px; align-items: flex-start;">
             <span style="font-size: 1.2rem; flex-shrink:0;">⚠️</span>
             <p style="margin:0; font-size: 0.88rem; color: #ffd580; line-height: 1.6;">
-                <strong>Tarayıcı Uyarısı:</strong> Telaffuz (ses) özelliği <strong>Opera</strong> tarayıcısında düzgün çalışmayabilir. Opera, Web Speech API'yi kısıtlı destekler. En iyi deneyim için <strong>Chrome</strong> veya <strong>Edge</strong> kullanmanı öneririz.
+                <strong>Tarayıcı Uyarısı:</strong> Telaffuz (ses) özelliği <strong>Opera</strong> tarayıcısında kısıtlı desteklenebilir. En iyi deneyim için <strong>Chrome</strong>, <strong>Edge</strong> veya <strong>Safari</strong> kullanmanı öneririz.
             </p>
         </div>
 
@@ -833,7 +783,7 @@
 
 <div class="container">
     <header>
-        <h1>Cine<span>Lingo</span> AI v18.0</h1>
+        <h1>Cine<span>Lingo</span> AI v18.4</h1>
         <p>Gelişmiş Yerel Aksan Motorlu Yapay Zeka Dil Laboratuvarı</p>
     </header>
 
@@ -848,8 +798,8 @@
         <div class="config-group" style="flex: 1;">
             <label>🌎 Film Dili:</label>
             <select id="lang-select" onchange="saveConfig(); filterDictionaryDisplay();">
-                <option value="de">Almanca (Deutsch)</option>
                 <option value="en">İngilizce (English)</option>
+                <option value="de">Almanca (Deutsch)</option>
                 <option value="fr">Fransızca (Français)</option>
                 <option value="es">İspanyolca (Español)</option>
                 <option value="it">İtalyanca (Italiano)</option>
@@ -863,6 +813,7 @@
         <button class="upload-btn" onclick="document.getElementById('srt-file').click()">Altyazı Dosyası Seç</button>
         <input type="file" id="video-file" accept="video/*" style="display: none;" onchange="handleVideoSelect(event)">
         <button class="upload-btn" style="background: var(--secondary); color: #12141c;" onclick="document.getElementById('video-file').click()">🎥 Video Dosyası Seç</button>
+        <button class="upload-btn" style="background: var(--success); color: #12141c;" onclick="loadDonnieDarkoDemo()">🎬 Hazır Yerel Test Sahnesini Yükle (Donnie Darko)</button>
         <button class="backup-btn" onclick="exportDictionary()">Kelimelerimi TXT Olarak Yedekle</button>
         <button class="backup-btn" onclick="exportJSON()">JSON Olarak Yedekle</button>
         <div id="file-info" style="margin-top: 10px; color: var(--secondary); font-weight: bold;"></div>
@@ -876,57 +827,48 @@
         <button class="tab-btn" onclick="switchTab('stats', this)">📊 İstatistikler</button>
     </div>
 
-    <!-- ALTYAZI AKIŞI -->
     <div id="stream" class="tab-content active">
-
         <div class="stream-layout" id="stream-layout">
-            <!-- YENİ: Video oynatıcı (sol kolon) -->
-            <div class="stream-video-col">
-                <div class="video-section" id="video-section">
-                    <div class="video-player-wrap">
-                        <div class="tv-frame">
-                            <div class="tv-antenna"><span></span><span></span></div>
-                            <div class="tv-screen-bezel">
-                                <video id="video-player" controls></video>
-                                <div class="tv-screen-glare"></div>
-                            </div>
-                            <div class="tv-controls">
-                                <div class="tv-led"></div>
-                                <div class="tv-knob"></div>
-                                <div class="tv-knob"></div>
-                                <span class="tv-label">CineLingo TV</span>
-                                <div class="tv-knob"></div>
-                                <div class="tv-knob"></div>
-                            </div>
+            <div class="stream-video-col" id="video-col-element">
+                <div class="video-player-wrap">
+                    <div class="tv-frame">
+                        <div class="tv-antenna"><span></span><span></span></div>
+                        <div class="tv-screen-bezel" id="screen-container">
+                            <video id="video-player" controls></video>
+                            <div class="tv-screen-glare"></div>
                         </div>
-                        <div class="video-controls-row">
-                            <label>
-                                <input type="checkbox" id="autoscroll-toggle" checked>
-                                Aktif sahneye otomatik kaydır
-                            </label>
-                            <span style="color: var(--text-light); font-size: 0.85rem;" id="video-filename"></span>
+                        <div class="tv-controls">
+                            <div class="tv-led"></div>
+                            <div class="tv-knob"></div>
+                            <div class="tv-knob"></div>
+                            <span class="tv-label">CineLingo TV</span>
+                            <div class="tv-knob"></div>
+                            <div class="tv-knob"></div>
                         </div>
-                        <div class="video-warning" id="video-warning"></div>
                     </div>
+                    <div class="video-controls-row">
+                        <label>
+                            <input type="checkbox" id="autoscroll-toggle" checked>
+                            Aktif sahneye otomatik kaydır
+                        </label>
+                        <span style="color: var(--text-light); font-size: 0.85rem;" id="video-filename"></span>
+                    </div>
+                    <div class="video-warning" id="video-warning"></div>
                 </div>
             </div>
 
-            <!-- Altyazı listesi (sağ kolon / video yoksa tam genişlik) -->
             <div class="stream-subs-col">
                 <input type="text" class="search-box" id="sub-search" placeholder="Altyazı satırlarında ara...">
-
                 <div id="loading-spinner" class="loading-overlay">
-                    🎬 Altyazı dosyası işleniyor ve butonlara dönüştürülüyor. Lütfen bekleyin... ⏳
+                    🎬 Altyazı dosyası işleniyor... Lütfen bekleyin... ⏳
                 </div>
-
                 <div class="subtitle-stream" id="subtitle-container">
-                    <p style="text-align: center; color: var(--text-light);">Lütfen çalışmak istediğiniz .srt dosyasını yükleyin.</p>
+                    <p style="text-align: center; color: var(--text-light);">Lütfen çalışmak istediğiniz .srt dosyasını yükleyin veya Hazır Yerel Test Sahnesini başlatın.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- SÖZLÜK -->
     <div id="dictionary" class="tab-content">
         <div class="dictionary-actions">
             <div class="input-with-btn">
@@ -939,7 +881,6 @@
             <button class="btn-add" onclick="addWordToDictionary()">Sözlüğe Kaydet</button>
         </div>
 
-        <!-- YENİ: Arama + filtre toolbar -->
         <div class="dict-toolbar">
             <input type="text" class="dict-search" id="dict-search" placeholder="Kelime veya anlam ara..." oninput="filterDictionaryDisplay()">
             <button class="filter-btn active" onclick="setLevelFilter('all', this)">Tümü</button>
@@ -952,10 +893,9 @@
         <div class="word-grid" id="word-grid-container"></div>
     </div>
 
-    <!-- FLASHCARD -->
     <div id="flashcards" class="tab-content">
         <div class="flashcard-container">
-            <div class="flashcard" id="card">
+            <div class="flashcard" id="card" onclick="flipCard()">
                 <div class="card-progress" id="card-progress"></div>
                 <div class="card-audio-container" onclick="event.stopPropagation();">
                     <button class="audio-btn" onclick="speakFlashcardWord()">🗣️</button>
@@ -967,27 +907,22 @@
                 <button class="flashcard-btn" style="background: #374151; color: white;" onclick="prevCard()">← Önceki</button>
                 <button class="flashcard-btn" style="background: var(--primary); color: white;" onclick="nextCard()">Sonraki →</button>
             </div>
-            <!-- YENİ: Biliyorum / Bilmiyorum -->
             <div class="flashcard-controls" style="margin-top: 10px;">
                 <button class="flashcard-btn btn-dontknow" onclick="markCard(false)">😬 Bilmiyorum</button>
                 <button class="flashcard-btn btn-know" onclick="markCard(true)">✅ Biliyorum</button>
             </div>
-            <!-- YENİ: Tekrar edilecekler -->
             <p id="repeat-info" style="color: var(--text-light); font-size: 0.85rem; margin-top: 12px; text-align:center;"></p>
         </div>
     </div>
 
-    <!-- YENİ: QUİZ MODU -->
     <div id="quiz" class="tab-content">
         <div class="quiz-container" id="quiz-container">
             <div style="text-align:center; padding: 40px; color: var(--text-light);">
                 <p style="font-size: 1.1rem;">Quiz başlatmak için en az 4 kelime gerekli.</p>
-                <button class="upload-btn" style="margin-top: 16px;" onclick="startQuiz()">Quiz Başlat 🎯</button>
             </div>
         </div>
     </div>
 
-    <!-- YENİ: İSTATİSTİKLER -->
     <div id="stats" class="tab-content">
         <div style="padding: 10px 0;">
             <h2 style="margin-bottom: 20px; color: var(--text-light); font-size: 1.2rem; font-weight: 600;">📊 Öğrenme İstatistikleri</h2>
@@ -1005,32 +940,19 @@
 </div>
 
 <script>
-    // ==================== MEVCUT DEĞİŞKENLER ====================
     let parsedSubtitles = [];
     let myDictionary = [];
     let currentCardIndex = 0;
     let isFlipped = false;
 
-    // ==================== YENİ DEĞİŞKENLER ====================
-    let learnedWords = {};      // {word_de: true/false} — Biliyorum/Bilmiyorum
-    let repeatQueue = [];       // Bilmiyorum denen kelimeler
+    let learnedWords = {};      
+    let repeatQueue = [];       
     let quizScore = 0;
     let quizTotal = 0;
     let quizWords = [];
     let quizIndex = 0;
     let currentLevelFilter = 'all';
-    let selectedWordSpan = null; // Altyazıda seçili span
-
-    // ==================== MEVCUT FONKSİYONLAR (aynen korundu) ====================
-
-    function openModal() { 
-        document.getElementById('welcome-modal').style.display = 'flex'; 
-    }
-    
-    function closeModal() {
-        document.getElementById('welcome-modal').style.display = 'none';
-        localStorage.setItem('hasVisitedCineLingo', 'true');
-    }
+    let selectedWordSpan = null; 
 
     window.onload = function() {
         const savedData = localStorage.getItem('cineLingoDictV16');
@@ -1047,7 +969,6 @@
         const hasVisited = localStorage.getItem('hasVisitedCineLingo');
         if (!hasVisited) openModal();
 
-        // YENİ: Öğrenme durumu yükle
         const savedLearned = localStorage.getItem('cineLingLearned');
         if (savedLearned) {
             try { learnedWords = JSON.parse(savedLearned); } catch(e) { learnedWords = {}; }
@@ -1066,7 +987,7 @@
             window.speechSynthesis.cancel();
             let utterance = new SpeechSynthesisUtterance(text);
             let langMapping = { 'de': 'de-DE', 'en': 'en-US', 'fr': 'fr-FR', 'es': 'es-ES', 'it': 'it-IT' };
-            let targetLang = langMapping[langCode] || 'de-DE';
+            let targetLang = langMapping[langCode] || 'en-US';
             utterance.lang = targetLang;
             utterance.rate = 0.85;
             let voices = window.speechSynthesis.getVoices();
@@ -1082,6 +1003,7 @@
         if(word && !word.includes("Seçilen")) speakWord(word, lang);
     }
 
+    // Tab ve genel fonksiyonlar
     function speakFlashcardWord() {
         let activeWords = getActiveLangWords();
         if(activeWords.length === 0) return;
@@ -1134,7 +1056,6 @@
                 const timeMatch = timeLine.match(/(\d{2}:\d{2}:\d{2})/);
                 const timeStamp = timeMatch ? timeMatch[1] : "00:00:00";
 
-                // YENİ: Video senkronizasyonu için başlangıç/bitiş süresini saniyeye çevir
                 const rangeMatch = timeLine.match(/(\d{2}):(\d{2}):(\d{2})[.,](\d{1,3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})[.,](\d{1,3})/);
                 let startSec = 0, endSec = 0;
                 if (rangeMatch) {
@@ -1154,7 +1075,6 @@
         container.innerHTML = '';
         const currentLang = document.getElementById('lang-select').value;
         
-        // Öğrenilen kelimelerin set'i (hızlı arama için)
         const knownSet = new Set(
             myDictionary
                 .filter(w => w.lang === currentLang && learnedWords[w.de] === true)
@@ -1164,7 +1084,6 @@
         subs.forEach((sub, subIdx) => {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'subtitle-item';
-            // YENİ: Video senkronizasyonu için zaman verisi
             itemDiv.dataset.start = sub.startSec || 0;
             itemDiv.dataset.end = sub.endSec || 0;
             
@@ -1172,7 +1091,6 @@
             timeSpan.className = 'sub-time';
             timeSpan.innerText = '[' + sub.time + ']';
 
-            // YENİ: Sahneyi kopyala butonu
             const copyBtn = document.createElement('button');
             copyBtn.className = 'copy-scene-btn';
             copyBtn.innerText = '📋 Kopyala';
@@ -1183,35 +1101,30 @@
             itemDiv.appendChild(timeSpan);
             itemDiv.appendChild(copyBtn);
 
-            // YENİ: Videoda bu sahneye git butonu
-            if (sub.endSec > 0) {
-                const gotoBtn = document.createElement('button');
-                gotoBtn.className = 'goto-btn';
-                gotoBtn.innerText = '▶ Sahneye git';
-                gotoBtn.onclick = function() {
-                    seekToSubtitle(sub.startSec);
-                };
-                itemDiv.appendChild(gotoBtn);
-            }
+            const gotoBtn = document.createElement('button');
+            gotoBtn.className = 'goto-btn';
+            gotoBtn.innerText = '▶ Sahneye git';
+            gotoBtn.onclick = function() {
+                seekToSubtitle(sub.startSec);
+            };
+            itemDiv.appendChild(gotoBtn);
             
             const textDiv = document.createElement('div');
             textDiv.className = 'sub-text';
             
             let words = sub.text.split(/\s+/);
             words.forEach(word => {
-                let cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()??"„"'']/g,"");
+                let cleanWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()??"„“'’]/g,"");
                 const wordSpan = document.createElement('span');
                 wordSpan.className = 'clickable-word';
                 wordSpan.innerText = word + ' ';
                 wordSpan.dataset.clean = cleanWord;
 
-                // YENİ: Öğrenilmiş kelimeyi yeşil göster
                 if (knownSet.has(cleanWord.toLowerCase())) {
                     wordSpan.classList.add('known-word');
                 }
                 
                 wordSpan.onclick = function() {
-                    // YENİ: Önceki seçili kelimeden highlight kaldır
                     if (selectedWordSpan && selectedWordSpan !== wordSpan) {
                         selectedWordSpan.classList.remove('selected-word');
                     }
@@ -1247,10 +1160,15 @@
             return;
         }
 
-        // YENİ: Zaten sözlükte var mı kontrol et
         const existing = myDictionary.find(w => w.de.toLowerCase() === cleanWord.toLowerCase() && w.lang === currentLang);
         if (existing) {
             showToast('"' + cleanWord + '" zaten sözlüğünde var!');
+        }
+
+        const video = document.getElementById('video-player');
+        if(video && video.src && !video.paused) {
+            video.pause();
+            showToast('Yapay zeka analizi için video durduruldu ⏸️');
         }
 
         let fullContext = parsedSubtitles[subIdx].text;
@@ -1260,15 +1178,9 @@
         document.getElementById('word-tr').value = "Analiz ediliyor... 🧠";
         document.getElementById('sentence-tr').value = langName + " bağlamı çözülüyor... ⚡";
         
-        // Sözlük sekmesine geç
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('dictionary').classList.add('active');
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-
+        switchTab('dictionary', document.querySelectorAll('.tab-btn')[1]);
         speakWord(cleanWord, currentLang);
 
-        // YENİ: Seviye de istiyor prompt'tan
         const promptText = "Sen profesyonel bir çok dilli dilbilimci ve sözlüksün. Sana kaynak dilde bir kelime ve o kelimenin geçtiği film altyazı cümlesini vereceğim. Kelimenin o cümledeki tam bağlamsal anlamına odaklanarak bana sadece ve sadece Türkçe anlamlarını ve dil seviyesini içeren şu JSON formatında cevap ver, asla açıklama veya markdown ekleme:\n" +
         "{\"word_meaning\": \"kelimenin bu cümledeki net Türkçe karşılığı\", \"sentence_meaning\": \"cümlenin komple pürüzsüz Türkçe çevirisi\", \"level\": \"A2 veya B1 veya B2 veya C1\"}\n\n" +
         "Kaynak Film Dili: " + langName + "\n" +
@@ -1298,7 +1210,6 @@
                 let resJson = JSON.parse(responseContent);
                 document.getElementById('word-tr').value = resJson.word_meaning;
                 document.getElementById('sentence-tr').value = resJson.sentence_meaning;
-                // YENİ: Seviyeyi gizli alanda sakla
                 document.getElementById('word-de').dataset.level = resJson.level || 'B1';
             }
         })
@@ -1315,17 +1226,16 @@
         const str = document.getElementById('sentence-tr').value.trim();
         const ctx = document.getElementById('word-ctx').value.trim();
         const lang = document.getElementById('lang-select').value;
-        const level = document.getElementById('word-de').dataset.level || 'B1'; // YENİ
+        const level = document.getElementById('word-de').dataset.level || 'B1';
 
         if(!de || !tr || tr.includes("ediliyor")) return;
 
-        // YENİ: Duplicate kontrolü
         if(myDictionary.find(w => w.de.toLowerCase() === de.toLowerCase() && w.lang === lang)) {
             showToast('"' + de + '" zaten sözlüğünde var!');
             return;
         }
 
-        myDictionary.push({ de, tr, str, ctx, lang, level }); // YENİ: level eklendi
+        myDictionary.push({ de, tr, str, ctx, lang, level }); 
         localStorage.setItem('cineLingoDictV16', JSON.stringify(myDictionary));
         
         document.getElementById('word-de').value = '';
@@ -1335,13 +1245,14 @@
         
         filterDictionaryDisplay();
 
-        // Altyazı sekmesine dön ve yeniden render et (yeşil highlight için)
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('stream').classList.add('active');
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        switchTab('stream', document.querySelectorAll('.tab-btn')[0]);
         if(parsedSubtitles.length) renderSubtitles(parsedSubtitles);
         showToast('"' + de + '" sözlüğe eklendi!');
+
+        const video = document.getElementById('video-player');
+        if(video && video.src && video.paused) {
+            video.play();
+        }
     }
 
     function deleteWord(indexInGlobal) {
@@ -1361,9 +1272,7 @@
         let count = 0;
         myDictionary.forEach((word, index) => {
             if (word.lang !== currentLang) return;
-            // YENİ: Seviye filtresi
             if (currentLevelFilter !== 'all' && word.level !== currentLevelFilter) return;
-            // YENİ: Arama filtresi
             if (searchQuery && !word.de.toLowerCase().includes(searchQuery) && !word.tr.toLowerCase().includes(searchQuery)) return;
 
             count++;
@@ -1412,7 +1321,6 @@
         link.click();
     }
 
-    // YENİ: JSON dışa aktarma
     function exportJSON() {
         const currentLang = document.getElementById('lang-select').value;
         const data = myDictionary.filter(w => w.lang === currentLang);
@@ -1428,20 +1336,13 @@
         return myDictionary.filter(w => w.lang === currentLang);
     }
 
-    document.getElementById('card').addEventListener('click', function(e) {
-        if (e.target.closest('.audio-btn')) return;
-        flipCard();
-    });
-
     function updateFlashcard() {
         const mainText = document.getElementById('card-main-text');
         const subText = document.getElementById('card-sub-text');
-        const card = document.getElementById('card');
         const progress = document.getElementById('card-progress');
         isFlipped = false;
-        card.classList.remove('flipped');
+        document.getElementById('card').classList.remove('flipped');
         
-        // YENİ: Tekrar kuyruğu doluysa ondan al
         let activeWords = repeatQueue.length > 0 ? repeatQueue : getActiveLangWords();
 
         if(activeWords.length === 0) {
@@ -1455,7 +1356,6 @@
         subText.innerText = "Sahne Cümlesi: " + activeWords[currentCardIndex].ctx;
         progress.innerText = (currentCardIndex + 1) + " / " + activeWords.length;
 
-        // YENİ: Tekrar kuyruğu bilgisi
         const repeatInfo = document.getElementById('repeat-info');
         if(repeatQueue.length > 0) {
             repeatInfo.innerText = '🔄 Tekrar modunda: ' + repeatQueue.length + ' kelime';
@@ -1499,9 +1399,6 @@
         updateFlashcard();
     }
 
-    // ==================== YENİ FONKSİYONLAR ====================
-
-    // Biliyorum / Bilmiyorum
     function markCard(known) {
         let activeWords = repeatQueue.length > 0 ? repeatQueue : getActiveLangWords();
         if(activeWords.length === 0) return;
@@ -1510,20 +1407,17 @@
         localStorage.setItem('cineLingLearned', JSON.stringify(learnedWords));
 
         if(!known) {
-            // Bilmiyorum: tekrar kuyruğuna ekle (yoksa)
             if(!repeatQueue.find(w => w.de === word.de)) {
                 repeatQueue.push(word);
             }
             showToast('😬 Tekrar listesine eklendi');
         } else {
-            // Biliyorum: tekrar kuyruğundan çıkar
             repeatQueue = repeatQueue.filter(w => w.de !== word.de);
             showToast('✅ Öğrenildi!');
         }
         nextCard();
     }
 
-    // Seviye filtresi
     function setLevelFilter(level, btn) {
         currentLevelFilter = level;
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -1531,7 +1425,6 @@
         filterDictionaryDisplay();
     }
 
-    // Toast bildirimi
     function showToast(msg) {
         const toast = document.getElementById('toast');
         toast.innerText = msg;
@@ -1540,12 +1433,11 @@
         toast._timer = setTimeout(() => { toast.style.display = 'none'; }, 2500);
     }
 
-    // Quiz başlat
     function initQuizTab() {
         const activeWords = getActiveLangWords();
         const container = document.getElementById('quiz-container');
         if(activeWords.length < 4) {
-            container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-light);"><p style="font-size: 1.1rem;">Quiz için en az 4 kelime gerekli.</p><p style="margin-top:8px; font-size:0.9rem;">Altyazı sekmesinden kelimelere tıklayarak sözlüğüne ekle.</p></div>';
+            container.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--text-light);"><p style="font-size: 1.1rem;">Quiz için en az 4 kelime gerekli.</p></div>';
             return;
         }
         container.innerHTML = '<div style="text-align:center; padding: 40px;"><p style="font-size: 1.1rem; color: var(--text-light); margin-bottom: 20px;">' + activeWords.length + ' kelimeden oluşan quiz hazır!</p><button class="upload-btn" style="margin:5px;" onclick="startQuiz()">4 Şıklı Quiz Başlat 🎯</button><button class="backup-btn" style="margin:5px;" onclick="startWriteQuiz()">Yazarak Cevapla ✍️</button></div>';
@@ -1624,8 +1516,8 @@
                     <div class="q-word">${q.de}</div>
                     <div class="q-ctx">${q.ctx}</div>
                     <p style="color: var(--text-light); font-size:0.9rem; margin-top: 10px;">Türkçe anlamını yaz:</p>
-                    <input type="text" id="write-ans" style="padding:12px; font-size:1rem; background:var(--bg-input); border:1px solid var(--border); color:white; border-radius:8px; width:80%; margin-top:10px; box-sizing:border-box;" placeholder="Cevabın..." onkeydown="if(event.key==='Enter') checkWriteAnswer('${q.de}', '${q.tr.replace(/'/g, "\\'")}')">
-                    <br><button class="upload-btn" style="margin-top:12px;" onclick="checkWriteAnswer('${q.de}', '${q.tr.replace(/'/g, "\\'")}')">Kontrol Et</button>
+                    <input type="text" id="write-ans" style="padding:12px; font-size:1rem; background:var(--bg-input); border:1px solid var(--border); color:white; border-radius:8px; width:80%; margin-top:10px; box-sizing:border-box;" placeholder="Cevabın..." onkeydown="if(event.key==='Enter') checkWriteAnswer('${q.de}', '${q.tr.replace(/'/g, "\\\\'")}')">
+                    <br><button class="upload-btn" style="margin-top:12px;" onclick="checkWriteAnswer('${q.de}', '${q.tr.replace(/'/g, "\\\\'")}')">Kontrol Et</button>
                 </div>
             </div>`;
         setTimeout(() => { const el = document.getElementById('write-ans'); if(el) el.focus(); }, 100);
@@ -1661,7 +1553,6 @@
             </div>`;
     }
 
-    // İstatistikler
     function renderStats() {
         const currentLang = document.getElementById('lang-select').value;
         const allWords = myDictionary.filter(w => w.lang === currentLang);
@@ -1669,7 +1560,6 @@
         const unknownCount = allWords.filter(w => learnedWords[w.de] === false).length;
         const unstudied = allWords.length - knownCount - unknownCount;
 
-        // Stats bar
         document.getElementById('stats-bar').innerHTML = `
             <div class="stat-item">
                 <div class="stat-num" style="color: var(--secondary);">${allWords.length}</div>
@@ -1693,7 +1583,6 @@
             </div>
         `;
 
-        // Seviye dağılımı
         const levels = ['A2', 'B1', 'B2', 'C1'];
         const levelColors = { A2: '#00e676', B1: '#00b0ff', B2: '#ffb300', C1: '#ff2a5f' };
         let levelHtml = '';
@@ -1713,7 +1602,6 @@
         });
         document.getElementById('level-chart').innerHTML = levelHtml || '<p style="color:var(--text-light)">Henüz veri yok.</p>';
 
-        // Tekrar listesi
         const repeatWords = allWords.filter(w => learnedWords[w.de] === false);
         if(repeatWords.length === 0) {
             document.getElementById('repeat-list').innerHTML = '<p style="color:var(--success)">Harika! Tekrar edilecek kelime yok.</p>';
@@ -1727,7 +1615,6 @@
         }
     }
 
-    // Yardımcı: karıştır
     function shuffle(arr) {
         for(let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -1736,7 +1623,7 @@
         return arr;
     }
 
-    // ==================== YENİ: VİDEO ENTEGRASYONU ====================
+    // ==================== VİDEO ENTEGRASYON MOTORU ====================
 
     function handleVideoSelect(event) {
         const file = event.target.files[0];
@@ -1745,16 +1632,109 @@
     }
 
     function loadVideoFile(file) {
-        const video = document.getElementById('video-player');
-        const url = URL.createObjectURL(file);
         hideVideoWarning();
-        video.src = url;
+        
+        const video = document.getElementById('video-player');
+        video.src = URL.createObjectURL(file);
+        
         document.getElementById('stream-layout').classList.add('video-active');
+        document.getElementById('video-col-element').style.display = 'block';
         document.getElementById('video-filename').innerText = '🎥 ' + file.name;
+        
+        video.addEventListener('timeupdate', syncSubtitles);
+        video.addEventListener('loadeddata', checkVideoPlayback);
+        
         showToast('Video yüklendi: ' + file.name);
     }
 
-    // YENİ: Codec uyumsuzluğu teşhisi — ses çalışıp görüntü gelmiyorsa kullanıcıyı bilgilendir
+    // 🍿 🛠️ YENİ: YOUTUBE BAĞIMLILIĞI BİTEN TAMAMEN YEREL DEMO PLAYER MOTORU
+    function loadDonnieDarkoDemo() {
+        document.getElementById('lang-select').value = 'en'; 
+        saveConfig();
+        hideVideoWarning();
+
+        // 1. Ekranı tamamen yerel video oynatıcısına sıfırla ve indirdiğin MP4 dosyasının adını ata
+        const screenContainer = document.getElementById('screen-container');
+        screenContainer.innerHTML = '<video id="video-player" controls></video><div class="tv-screen-glare"></div>';
+        
+        const video = document.getElementById('video-player');
+        // Kullanıcı butona bastığında indirdiği yerel dosyayı (aynı isimdeyse) otomatik yakalaması için ismi simüle ediyoruz
+        video.src = "YTDown_YouTube_Donnie-Darko-2001-Movie-Theater-scene_Media_1WbzSSuJ6KA_001_720p.mp4"; 
+        
+        document.getElementById('stream-layout').classList.add('video-active');
+        document.getElementById('video-col-element').style.display = 'block';
+        document.getElementById('video-filename').innerText = '🍿 Yerel Video Modu: Donnie Darko Movie Theater Scene';
+
+        // Event listener'ları bağla
+        video.addEventListener('timeupdate', syncSubtitles);
+        video.addEventListener('loadeddata', checkVideoPlayback);
+
+        // 2. Altyazı Verilerini Sisteme Enjekte Et
+        const donnieDarkoSrtData = 
+`1
+00:00:11,000 --> 00:00:15,000
+Two for "Evil Dead", please. That'll be $2.
+
+2
+00:01:02,000 --> 00:01:06,000
+Why are you wearing that stupid bunny suit?
+
+3
+00:01:10,000 --> 00:01:14,000
+Why are you wearing that stupid man suit?
+
+4
+00:01:23,000 --> 00:01:26,000
+Take it off.
+
+5
+00:01:45,000 --> 00:01:49,000
+What happened to your eye?
+
+6
+00:01:54,000 --> 00:01:57,000
+I’m so sorry.
+
+7
+00:02:03,000 --> 00:02:06,000
+Why do they call you Frank?
+
+8
+00:02:07,000 --> 00:02:11,000
+It is the name of my father…
+
+9
+00:02:12,000 --> 00:02:15,000
+and his father before me.
+
+10
+00:02:18,000 --> 00:02:20,000
+Frank?
+
+11
+00:02:23,000 --> 00:02:27,000
+When’s this going to stop? You should already know that.
+
+12
+00:02:32,000 --> 00:02:35,000
+I want you to watch the movie screen.
+
+13
+00:02:36,000 --> 00:02:40,000
+There’s something I want to show you.
+
+14
+00:02:47,000 --> 00:02:50,000
+Have you ever seen a portal?
+
+15
+00:03:08,000 --> 00:03:12,000
+Burn it to the ground.`;
+
+        parseSRT(donnieDarkoSrtData);
+        showToast('Donnie Darko yerel test altyazısı yüklendi! Videoyu klasörünüzden seçerek hemen oynatabilirsiniz. 🎬');
+    }
+
     function showVideoWarning(msg) {
         const box = document.getElementById('video-warning');
         box.innerHTML = msg;
@@ -1767,67 +1747,58 @@
     }
     function checkVideoPlayback() {
         const video = document.getElementById('video-player');
-        // Bir kare çözülmüş mü kontrol et: videoWidth/videoHeight 0 ise görüntü kanalı oynatılamıyor demektir
+        if(!video) return;
         setTimeout(() => {
             if (video.readyState >= 1 && (video.videoWidth === 0 || video.videoHeight === 0)) {
                 showVideoWarning(
                     '⚠️ <strong>Görüntü gelmiyor, sadece ses çalışıyor.</strong><br>' +
-                    'Bu genellikle video dosyasının <strong>HEVC/H.265</strong> gibi tarayıcının desteklemediği bir codec ile sıkıştırılmış olmasından kaynaklanır (Opera ve diğer Chromium tabanlı tarayıcılar bu codec\'i çoğunlukla desteklemez, ama AAC sesi çalabilir).<br><br>' +
-                    '<strong>Çözüm:</strong> Dosyayı HandBrake gibi bir programla <strong>H.264 (MP4)</strong> formatına dönüştürüp tekrar yükleyin. Codec\'i kontrol etmek için dosya adında "x265", "HEVC" veya "H265" geçip geçmediğine bakabilirsiniz.'
+                    'Lütfen tarayıcınızla uyumlu bir MP4 (H.264) dosyası kullanın.'
                 );
             }
         }, 600);
     }
 
-    // Altyazı satırındaki "Sahneye git" butonu -> videoyu o zamana sar ve oynat
     function seekToSubtitle(startSec) {
         const video = document.getElementById('video-player');
-        if (!video.src) {
-            showToast('Önce bir video dosyası yükleyin!');
-            return;
+        if (video && video.src) {
+            video.currentTime = startSec;
+            video.play();
+        } else {
+            showToast('Lütfen önce "Video Dosyası Seç" butonundan indirdiğiniz Donnie Darko MP4 dosyasını uygulamaya yükleyin!');
         }
-        video.currentTime = startSec;
-        video.play();
     }
 
-    // Video oynarken aktif altyazıyı vurgula ve (isteğe bağlı) ekranı kaydır
     function syncSubtitles() {
         const video = document.getElementById('video-player');
+        if(!video) return;
         const t = video.currentTime;
         const items = document.querySelectorAll('.subtitle-item');
         const autoscroll = document.getElementById('autoscroll-toggle').checked;
 
-        let activeItem = null;
         items.forEach(item => {
             const start = parseFloat(item.dataset.start || 0);
             const end = parseFloat(item.dataset.end || 0);
             if (end > 0 && t >= start && t <= end) {
-                item.classList.add('active-subtitle');
-                activeItem = item;
+                if (!item.classList.contains('active-subtitle')) {
+                    item.classList.add('active-subtitle');
+                    if (autoscroll) {
+                        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
             } else {
                 item.classList.remove('active-subtitle');
             }
         });
-
-        if (activeItem && autoscroll) {
-            activeItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
     }
 
-    // Video player hazır olduğunda dinleyicileri bağla
     (function initVideoSync() {
         const video = document.getElementById('video-player');
         if (video) {
             video.addEventListener('timeupdate', syncSubtitles);
-            // YENİ: Codec teşhisi
             video.addEventListener('loadeddata', checkVideoPlayback);
-            video.addEventListener('error', function() {
-                showVideoWarning('❌ Video dosyası açılamadı. Format desteklenmiyor olabilir. MP4 (H.264) formatında bir dosya deneyin.');
-            });
         }
     })();
 
-    // Drag & drop (aynen korundu)
     const dropZone = document.getElementById('drop-zone');
     dropZone.addEventListener('dragover', (e) => e.preventDefault());
     dropZone.addEventListener('drop', (e) => {
@@ -1837,11 +1808,9 @@
         if(file.name.endsWith('.srt')) {
             processSrtFile(file);
         } else if(file.type.startsWith('video/')) {
-            // YENİ: video dosyası sürükle-bırak desteği
             loadVideoFile(file);
         }
     });
 </script>
-
 </body>
 </html>
