@@ -1206,7 +1206,7 @@
         "Kelime: " + cleanWord + "\n" +
         "İçinde Geçtiği Cümle: " + fullContext;
 
-         fetch('https://api.groq.com/openai/v1/chat/completions', {
+        fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1215,8 +1215,7 @@
             body: JSON.stringify({
                 model: "qwen/qwen3.6-27b",
                 messages: [{ role: "user", content: promptText }],
-                temperature: 0.1,
-                max_tokens: 300
+                temperature: 0.1
             })
         })
         .then(async res => {
@@ -1230,26 +1229,19 @@
         .then(data => {
             if (data.choices && data.choices[0]) {
                 let responseContent = data.choices[0].message.content.trim();
-                
-                // Qwen'in <think>...</think> düşünce bloklarını temizle
-                responseContent = responseContent.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
-                // Markdown bloklarını temizle
-                responseContent = responseContent.replace(/```json/gi, "").replace(/```/gi, "").trim();
-                
-                // Yalnızca ilk { ve son } arasındaki geçerli JSON alanını al
-                const firstBrace = responseContent.indexOf('{');
-                const lastBrace = responseContent.lastIndexOf('}');
-                if (firstBrace !== -1 && lastBrace !== -1) {
-                    responseContent = responseContent.substring(firstBrace, lastBrace + 1);
-                }
-
+                responseContent = responseContent.replace(/```json/g, "").replace(/```/g, "").trim();
                 let resJson = JSON.parse(responseContent);
-                document.getElementById('word-tr').value = resJson.word_meaning || '';
-                document.getElementById('sentence-tr').value = resJson.sentence_meaning || '';
+                document.getElementById('word-tr').value = resJson.word_meaning;
+                document.getElementById('sentence-tr').value = resJson.sentence_meaning;
                 document.getElementById('word-de').dataset.level = resJson.level || 'B1';
             }
         })
-
+        .catch(err => {
+            console.error("Groq Hatası:", err);
+            document.getElementById('word-tr').value = "Hata: " + err.message;
+            document.getElementById('sentence-tr').value = "İstek başarısız oldu.";
+        });
+    }
 
 
     function addWordToDictionary() {
