@@ -1162,11 +1162,8 @@
         renderSubtitles(filtered);
     }
 
-        function selectWord(subIdx, cleanWord) {
-        // 1. Anahtarı hem kutudan hem hafızadan al, boşlukları temizle
-        let apiKeyInput = document.getElementById('api-key-input');
-        let apiKey = (apiKeyInput ? apiKeyInput.value.trim() : '') || localStorage.getItem('groqApiKey') || '';
-        
+    function selectWord(subIdx, cleanWord) {
+        let apiKey = localStorage.getItem('groqApiKey');
         let currentLang = document.getElementById('lang-select').value;
         let langName = document.getElementById('lang-select').options[document.getElementById('lang-select').selectedIndex].text;
 
@@ -1176,16 +1173,13 @@
             return;
         }
 
-        // Anahtarı hemen hafızaya kaydet
-        localStorage.setItem('groqApiKey', apiKey);
-
         const existing = myDictionary.find(w => w.de.toLowerCase() === cleanWord.toLowerCase() && w.lang === currentLang);
         if (existing) {
             showToast('"' + cleanWord + '" zaten sözlüğünde var!');
         }
 
         const video = document.getElementById('video-player');
-        if (video && video.src && !video.paused) {
+        if(video && video.src && !video.paused) {
             video.pause();
             showToast('Yapay zeka analizi için video durduruldu ⏸️');
         }
@@ -1200,7 +1194,7 @@
         switchTab('dictionary', document.querySelectorAll('.tab-btn')[1]);
         speakWord(cleanWord, currentLang);
 
-        const promptText = "Sen profesyonel bir çok dilli dilbilimci ve sözlüksün. Sana kaynak dilde bir kelime ve o kelimenin geçtiği film altyazı cümlesini vereceğim. Kelimenin o cümledeki tam bağlamsal anlamına odaklanarak bana sadece ve sadece Türkçe anlamlarını ve dil seviyesini içeren şu JSON formatında cevap ver, asla açıklama veya markdown ekleme:\n" +
+        const promptText = "Sen profesyonel bir çok dilli dilbilimci ve sözlüksün. Sana kaynak dilde bir kelime og o kelimenin geçtiği film altyazı cümlesini vereceğim. Kelimenin o cümledeki tam bağlamsal anlamına odaklanarak bana sadece ve sadece Türkçe anlamlarını ve dil seviyesini içeren şu JSON formatında cevap ver, asla açıklama veya markdown ekleme:\n" +
         "{\"word_meaning\": \"kelimenin bu cümledeki net Türkçe karşılığı\", \"sentence_meaning\": \"cümlenin komple pürüzsüz Türkçe çevirisi\", \"level\": \"A2 veya B1 veya B2 veya C1\"}\n\n" +
         "Kaynak Film Dili: " + langName + "\n" +
         "Kelime: " + cleanWord + "\n" +
@@ -1213,17 +1207,13 @@
                 'Authorization': 'Bearer ' + apiKey
             },
             body: JSON.stringify({
-                model: "qwen/qwen3.6-27b",
+                model: "llama-3.1-8b-instant",
                 messages: [{ role: "user", content: promptText }],
                 temperature: 0.1
             })
         })
-        .then(async res => {
-            if (!res.ok) {
-                const errData = await res.json().catch(() => ({}));
-                const errMsg = errData.error ? errData.error.message : ("HTTP " + res.status);
-                throw new Error(errMsg);
-            }
+        .then(res => {
+            if(!res.ok) throw new Error("API Hatası");
             return res.json();
         })
         .then(data => {
@@ -1237,12 +1227,11 @@
             }
         })
         .catch(err => {
-            console.error("Groq Hatası:", err);
-            document.getElementById('word-tr').value = "Hata: " + err.message;
+            console.error(err);
+            document.getElementById('word-tr').value = "Hata! API Key veya bağlantı geçersiz.";
             document.getElementById('sentence-tr').value = "İstek başarısız oldu.";
         });
     }
-
 
     function addWordToDictionary() {
         const de = document.getElementById('word-de').value.trim();
