@@ -1206,7 +1206,7 @@
         "Kelime: " + cleanWord + "\n" +
         "İçinde Geçtiği Cümle: " + fullContext;
 
-        fetch('https://api.groq.com/openai/v1/chat/completions', {
+         fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -1215,7 +1215,8 @@
             body: JSON.stringify({
                 model: "qwen/qwen3.6-27b",
                 messages: [{ role: "user", content: promptText }],
-                temperature: 0.1
+                temperature: 0.1,
+                max_tokens: 300
             })
         })
         .then(async res => {
