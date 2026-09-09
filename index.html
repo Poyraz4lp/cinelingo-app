@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v18.5</title>
+    <title>CineLingo AI - Evrensel Yapay Zeka Dil Laboratuvarı v19.0 (Gemini)</title>
     <style>
         :root {
             --bg-main: #12141c;
@@ -692,13 +692,12 @@
             border: 1px solid var(--border);
         }
 
-        /* 🔒 POP-UP (MODAL) GÖRSEL STİLLERİ ONARILDI */
         .modal-overlay {
-            display: none; /* JS openModal ile 'flex' yapılacak */
+            display: none; 
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85);
-            z-index: 99999 !important; /* En öne çıkması sağlandı */
+            z-index: 99999 !important; 
             backdrop-filter: blur(5px);
             align-items: center;
             justify-content: center;
@@ -757,8 +756,8 @@
         <p style="color: var(--text-light); margin-bottom: 25px;">Bu site, izlediğin yabancı filmlerdeki kelimeleri yapay zeka ile canlı analiz etmeni sağlar. Başlamak için sadece 3 basit adıma ihtiyacımız var:</p>
         
         <div class="step-item">
-            <p><strong><span class="step-number">1</span> Ücretsiz Yapay Zeka Anahtarı (API Key) Al:</strong><br>
-            Sistem arka planda Groq yapay zekasını kullanır. <a href="https://console.groq.com/" target="_blank" style="color: var(--secondary); font-weight: bold;">Buraya tıklayarak Groq sitesine git</a>, ücretsiz anahtarını (<code>gsk_...</code>) oluştur og kutuya yapıştır.</p>
+            <p><strong><span class="step-number">1</span> Ücretsiz Gemini Yapay Zeka Anahtarı Al:</strong><br>
+            Sistem arka planda Google Gemini yapay zekasını kullanır. <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: var(--secondary); font-weight: bold;">Buraya tıklayarak Google AI Studio'ya git</a>, ücretsiz API anahtarını (<code>AIza...</code>) oluştur ve ana ekrandaki kutuya yapıştır.</p>
         </div>
 
         <div class="step-item">
@@ -784,17 +783,17 @@
 
 <div class="container">
     <header>
-        <h1>Cine<span>Lingo</span> AI v18.5</h1>
-        <p>Gelişmiş Yerel Aksan Motorlu Yapay Zeka Dil Laboratuvarı</p>
+        <h1>Cine<span>Lingo</span> AI v19.0</h1>
+        <p>Gelişmiş Yerel Aksan Motorlu ve Gemini Destekli Dil Laboratuvarı</p>
     </header>
 
     <div class="config-section">
         <div class="config-group" style="flex: 2;">
             <label>
-                <span>⚡ Groq Cloud API Key:</span>
+                <span>⚡ Google Gemini API Key:</span>
                 <span class="help-link" onclick="openModal()">❓ Nasıl Alınır?</span>
             </label>
-            <input type="password" id="api-key-input" placeholder="gsk_... anahtarınızı yapıştırın" onchange="saveConfig()">
+            <input type="password" id="api-key-input" placeholder="AIza... ile başlayan Gemini API anahtarını yapıştır" onchange="saveConfig()">
         </div>
         <div class="config-group" style="flex: 1;">
             <label>🌎 Film Dili:</label>
@@ -877,7 +876,7 @@
                 <button class="audio-btn" onclick="speakCurrentWord()" title="Telaffuz Et">🗣️</button>
             </div>
             <input type="text" id="word-tr" placeholder="Yapay Zeka Çeviriyor... 🤖">
-            <input type="text" id="sentence-tr" placeholder="Cümlenin Çevirisi (Llama)...">
+            <input type="text" id="sentence-tr" placeholder="Cümlenin Çevirisi (Gemini)...">
             <input type="text" id="word-ctx" placeholder="Orijinal Cümle">
             <button class="btn-add" onclick="addWordToDictionary()">Sözlüğe Kaydet</button>
         </div>
@@ -955,7 +954,6 @@
     let currentLevelFilter = 'all';
     let selectedWordSpan = null; 
 
-    // 🛠️ POP-UP REHBER METOTLARI KODA KALICI DİKİLDİ
     function openModal() { 
         document.getElementById('welcome-modal').style.display = 'flex'; 
     }
@@ -977,7 +975,6 @@
         const savedLang = localStorage.getItem('targetLanguage');
         if (savedLang) document.getElementById('lang-select').value = savedLang;
 
-        // Pop-up tetikleyici kontrolü açıldı
         const hasVisited = localStorage.getItem('hasVisitedCineLingo');
         if (!hasVisited) {
             openModal();
@@ -1162,13 +1159,16 @@
         renderSubtitles(filtered);
     }
 
+    // ==========================================
+    // GEMINI API ENTEGRASYONU (JSON DESTEKLİ)
+    // ==========================================
     function selectWord(subIdx, cleanWord) {
         let apiKey = localStorage.getItem('groqApiKey');
         let currentLang = document.getElementById('lang-select').value;
         let langName = document.getElementById('lang-select').options[document.getElementById('lang-select').selectedIndex].text;
 
         if (!apiKey) {
-            alert("Lütfen önce yukarıdaki alana Groq API Key tanımlayın!");
+            alert("Lütfen önce yukarıdaki alana Gemini API Key tanımlayın!");
             openModal();
             return;
         }
@@ -1194,24 +1194,25 @@
         switchTab('dictionary', document.querySelectorAll('.tab-btn')[1]);
         speakWord(cleanWord, currentLang);
 
-        const promptText = "Sen profesyonel bir çok dilli dilbilimci ve sözlüksün. Sana kaynak dilde bir kelime og o kelimenin geçtiği film altyazı cümlesini vereceğim. Kelimenin o cümledeki tam bağlamsal anlamına odaklanarak bana sadece ve sadece Türkçe anlamlarını ve dil seviyesini içeren şu JSON formatında cevap ver, asla açıklama veya markdown ekleme:\n" +
+        const promptText = "Sen profesyonel bir çok dilli dilbilimci ve sözlüksün. Sana kaynak dilde bir kelime ve o kelimenin geçtiği film altyazı cümlesini vereceğim. Kelimenin o cümledeki tam bağlamsal anlamına odaklanarak bana sadece ve sadece Türkçe anlamlarını ve dil seviyesini içeren şu JSON formatında cevap ver:\n" +
         "{\"word_meaning\": \"kelimenin bu cümledeki net Türkçe karşılığı\", \"sentence_meaning\": \"cümlenin komple pürüzsüz Türkçe çevirisi\", \"level\": \"A2 veya B1 veya B2 veya C1\"}\n\n" +
         "Kaynak Film Dili: " + langName + "\n" +
         "Kelime: " + cleanWord + "\n" +
         "İçinde Geçtiği Cümle: " + fullContext;
 
-        // BURASI GÜNCELLENDİ: qwen3.6-27b modeli, max_tokens: 300 ve JSON Think Temizliği
-        fetch('https://api.groq.com/openai/v1/chat/completions', {
+        fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + apiKey
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                model: "qwen/qwen3.6-27b",
-                messages: [{ role: "user", content: promptText }],
-                temperature: 0.1,
-                max_tokens: 300
+                contents: [{
+                    parts: [{ text: promptText }]
+                }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    temperature: 0.1
+                }
             })
         })
         .then(async res => {
@@ -1223,21 +1224,8 @@
             return res.json();
         })
         .then(data => {
-            if (data.choices && data.choices[0]) {
-                let responseContent = data.choices[0].message.content.trim();
-                
-                // Qwen'in <think>...</think> düşünce bloklarını temizle
-                responseContent = responseContent.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
-                // Markdown bloklarını temizle
-                responseContent = responseContent.replace(/```json/gi, "").replace(/```/gi, "").trim();
-                
-                // Yalnızca ilk { ve son } arasındaki geçerli JSON alanını al
-                const firstBrace = responseContent.indexOf('{');
-                const lastBrace = responseContent.lastIndexOf('}');
-                if (firstBrace !== -1 && lastBrace !== -1) {
-                    responseContent = responseContent.substring(firstBrace, lastBrace + 1);
-                }
-
+            if (data.candidates && data.candidates[0].content.parts[0].text) {
+                let responseContent = data.candidates[0].content.parts[0].text.trim();
                 let resJson = JSON.parse(responseContent);
                 document.getElementById('word-tr').value = resJson.word_meaning || '';
                 document.getElementById('sentence-tr').value = resJson.sentence_meaning || '';
@@ -1246,8 +1234,8 @@
         })
         .catch(err => {
             console.error("API Hatası:", err);
-            document.getElementById('word-tr').value = "Hata! API yanıt vermedi.";
-            document.getElementById('sentence-tr').value = "İstek başarısız: " + err.message;
+            document.getElementById('word-tr').value = "Hata! API yanıt vermedi veya anahtar hatalı.";
+            document.getElementById('sentence-tr').value = "Lütfen Gemini API anahtarını kontrol et.";
         });
     }
 
@@ -1654,8 +1642,6 @@
         }
     }
 
-    // ==================== VİDEO ENTEGRASYON MOTORU ====================
-
     function handleVideoSelect(event) {
         const file = event.target.files[0];
         if (!file) return;
@@ -1836,7 +1822,7 @@ Burn it to the ground.`;
         } else if(file.type.startsWith('video/')) {
             loadVideoFile(file);
         }
-    }); // BURADAKİ KAPANIŞ DÜZELTİLDİ
+    }); 
 </script>
 </body>
 </html>
